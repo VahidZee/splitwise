@@ -72,7 +72,7 @@ WSGI_APPLICATION = 'splitwise.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-if sys.argv[1] == 'test':
+if sys.argv[1] == 'test' or 'POSTGRESQL_DATABASE' not in os.environ:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
