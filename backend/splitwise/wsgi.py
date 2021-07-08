@@ -13,6 +13,6 @@ from django.core.wsgi import get_wsgi_application
 import dotenv
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'splitwise.settings')
-if os.path.isfile('.env'):
+if os.path.isfile('../.env'):
     dotenv.load_dotenv('.env')
 application = get_wsgi_application()

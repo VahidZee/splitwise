@@ -1,16 +1,22 @@
 # copy nginx_config files
-if [ -z $1 ]; then
+if [ -z $2 ]; then
   PREFIX="dev-"
 else
   PREFIX=""
 fi
+if [ -z $1 ]; then
+  echo "Specify branch name in the first argument"
+fi
+
+# setup .env variables
+printenv >~/$PREFIX$1/.env
 
 # uwsgi
 for i in $(ls uwsgi/"${PREFIX}"*.ini); do
   echo setting up uwsgi $i
   # restarting uwsgi processes
   sudo uwsgi --stop /tmp/$(basename $i .ini).pid
-  sudo uwsgi --uid $user --ini $i
+  sudo uwsgi --ini $i --uid $USER
 done
 
 # nginx
