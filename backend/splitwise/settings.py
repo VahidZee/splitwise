@@ -20,6 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
+LOCAL_RUN = os.environ.get("LOCAL_RUN", default=False)
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("SECRET_KEY", 'django-insecure-r8hugh741vfw5bt7dfmmhx4x93l%jkisaq4i1-&(huq%v=6t1a')
@@ -73,6 +74,7 @@ WSGI_APPLICATION = 'splitwise.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 if (len(sys.argv) > 1 and sys.argv[1] == 'test') or 'POSTGRESQL_DATABASE' not in os.environ:
+    print('using sqlite3')
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -80,6 +82,7 @@ if (len(sys.argv) > 1 and sys.argv[1] == 'test') or 'POSTGRESQL_DATABASE' not in
         }
     }
 else:
+    print('using postgresql')
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -126,6 +129,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/') if LOCAL_RUN else f'/var/files/{"dev-" if DEBUG else ""}back/static/'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/') if LOCAL_RUN else f'/var/files/{"dev-" if DEBUG else ""}back/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
