@@ -17,7 +17,7 @@ done
 for i in $(ls nginx/"${PREFIX}"*.conf); do
   echo setting up nginx configuration $i
   # move new server config
-  sudo mv $i /etc/nginx/sites-available/
+  sudo yes | cp $i /etc/nginx/sites-available/
   # enable new server config
   sudo rm /etc/nginx/sites-enabled/$(basename $i)
   sudo ln -s /etc/nginx/sites-available/$(basename $i) /etc/nginx/sites-enabled/
