@@ -13,6 +13,9 @@ from django.core.wsgi import get_wsgi_application
 import dotenv
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'splitwise.settings')
+print(os.getcwd())
 if os.path.isfile('../.env'):
     dotenv.load_dotenv('.env')
+else:
+    print('environment file not found')
 application = get_wsgi_application()
