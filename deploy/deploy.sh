@@ -11,6 +11,15 @@ fi
 # setup .env variables
 printenv >~/$PREFIX$1/.env
 
+# setup django
+# exporting environmental variables
+set -a
+source ~/venvs/$PREFIX$1/bin/activate
+pip install -r ../backend/requirements.txt
+python ../backend/manage.py collectstatic --no-input
+python ./backend/manage.py migrate --no-input
+deactivate
+
 # uwsgi
 for i in $(ls uwsgi/"${PREFIX}"*.ini); do
   echo setting up uwsgi $i

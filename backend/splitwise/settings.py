@@ -29,6 +29,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY", 'django-insecure-r8hugh741vfw5bt7dfmmh
 DEBUG = int(os.environ.get("DEBUG", default=1))
 
 ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS", '*').split(" ")
+print('local run:', LOCAL_RUN, 'debug:', DEBUG)
 
 # Application definition
 INSTALLED_APPS = [
@@ -130,9 +131,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/') if LOCAL_RUN else f'/var/files/{"dev-" if DEBUG else ""}back/static/'
-
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/') if LOCAL_RUN else f'/var/files/{"dev-" if DEBUG else ""}back/media/'
+print('static root:', STATIC_ROOT, 'media root:', MEDIA_ROOT)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
