@@ -29,12 +29,12 @@ jobs:
       - name: Deploy on server
         uses: appleboy/ssh-action@v0.1.4
         env:
-          POSTGRESQL_DATABASE: "${{ secrets.POSTGRESQL_DATABASE }}"
-          POSTGRESQL_HOST: "${{ secrets.POSTGRESQL_HOST }}"
-          POSTGRESQL_PASSWORD: "${{ secrets.POSTGRESQL_PASSWORD }}"
-          POSTGRESQL_PORT: "${{ secrets.POSTGRESQL_PORT }}"
-          POSTGRESQL_USER: "${{ secrets.POSTGRESQL_USER }}"
-          SECRET_KEY: "${{ secrets.SECRET_KEY }}"
+          POSTGRESQL_DATABASE: ${{ secrets.POSTGRESQL_DATABASE }}
+          POSTGRESQL_HOST: ${{ secrets.POSTGRESQL_HOST }}
+          POSTGRESQL_PASSWORD: ${{ secrets.POSTGRESQL_PASSWORD }}
+          POSTGRESQL_PORT: ${{ secrets.POSTGRESQL_PORT }}
+          POSTGRESQL_USER: ${{ secrets.POSTGRESQL_USER }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
           DEBUG: "1"
           BRANCH: ${{ steps.extract_branch.outputs.branch }}
         with:
@@ -43,12 +43,12 @@ jobs:
           password: ${{ secrets.SSH_PASS }}
           envs: POSTGRESQL_DATABASE,POSTGRESQL_HOST,POSTGRESQL_PASSWORD,POSTGRESQL_PORT,POSTGRESQL_USER,SECRET_KEY,DEBUG,BRANCH 
           script: |
-            echo $BRANCH $POSTGRESQL_PORT
+
             echo ~/$BRANCH
             [ ! -d "~/$BRANCH" ] && git clone "http://github.com/${{ github.repository }}.git" ~/$BRANCH
+            [ ! -d "~/venvs" ] && mkdir ~/venvs
+            [ ! -d "~/venvs/$BRANCH" ] && virtualenv -p python3 ~/venvs/$BRANCH
             cd ~/$BRANCH/
-            git fetch origin
-            git branch -v -a
             git checkout $BRANCH
             git pull
             cd ~/$BRANCH/deploy/
