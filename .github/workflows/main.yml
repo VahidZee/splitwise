@@ -23,7 +23,9 @@ jobs:
     steps:
       # Runs a set of commands using the runners shell
       - name: Branch name
-        run: echo running on branch ${GITHUB_REF##*/} ${{ github.ref##*/ }}
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: extract_branch 
       - name: Deploy on server
         uses: appleboy/ssh-action@v0.1.4
         env:
@@ -34,7 +36,7 @@ jobs:
           POSTGRESQL_USER: "${{ secrets.POSTGRESQL_USER }}"
           SECRET_KEY: "${{ secrets.SECRET_KEY }}"
           DEBUG: "1"
-          BRANCH: ${{ github.ref##*/ }}
+          BRANCH: ${{ steps.extract_branch.outputs.branch }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
