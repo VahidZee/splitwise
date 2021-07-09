@@ -4,7 +4,7 @@ name: Deployment
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ "dev-*" ]
+    branches: [ "*" ]
   pull_request:
     branches: [ "main" ]
 
@@ -25,31 +25,16 @@ jobs:
         run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
         id: extract_branch 
         
-      - name: Database name
-        shell: bash
-        env:
-          DEV: ${{ secrets.POSTGRESQL_DEV_DATABASE }}
-          MAIN: ${{ secrets.POSTGRESQL_MAIN_DATABASE }}
-          BRANCH: ${{ steps.extract_branch.outputs.branch }}
-        id: database_info
-        run: |
-          if [ $BRANCH == "main" ]
-          then
-            echo "##[set-output name=name;]$(echo $MAIN)"
-          else
-            echo "##[set-output name=name;]$(echo $DEV)"
-          fi
-          
       - name: Deploy on server
         uses: appleboy/ssh-action@v0.1.4
         env:
-          POSTGRESQL_DATABASE: ${{ steps.database_info.outputs.branch }}
+          POSTGRESQL_DATABASE: ${{ steps.extract_branch.outputs.branch == 'main' && secrets.POSTGRESQL_MAIN_DATABASE || secrets.POSTGRESQL_DEV_DATABASE }}
           POSTGRESQL_HOST: ${{ secrets.POSTGRESQL_HOST }}
           POSTGRESQL_PASSWORD: ${{ secrets.POSTGRESQL_PASSWORD }}
           POSTGRESQL_PORT: ${{ secrets.POSTGRESQL_PORT }}
           POSTGRESQL_USER: ${{ secrets.POSTGRESQL_USER }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          DEBUG: ${{ steps.extract_branch.outputs.branch == "main" }}
+          DEBUG: ${{ steps.extract_branch.outputs.branch == 'main' && '1' || '0' }}
           BRANCH: ${{ steps.extract_branch.outputs.branch }}
         with:
           host: ${{ secrets.SSH_HOST }}
