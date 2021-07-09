@@ -34,21 +34,22 @@ jobs:
           POSTGRESQL_USER: ${{ secrets.POSTGRESQL_USER }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
           DEBUG: 1
+          BRANCH: ${GITHUB_REF##*/}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASS }}
           envs: POSTGRESQL_DATABASE,POSTGRESQL_HOST,POSTGRESQL_PASSWORD,POSTGRESQL_PORT,POSTGRESQL_USER,SECRET_KEY,DEBUG 
           script: |
-            echo ${{GITHUB_REF##*/}}
-            echo "~/${{GITHUB_REF##*/}}"
-            [ ! -d "~/${{GITHUB_REF##*/}}" ] && clone http://github.com/${{GITHUB_REPOSITORY}}.git ~/${{GITHUB_REF##*/}}
+            echo $BRANCH
+            echo ~/$BRANCH
+            [ ! -d "~/$BRANCH" ] && clone http://github.com/${{GITHUB_REPOSITORY}}.git ~/$BRANCH
             cd ~/dev-back/
             git fetch origin
             git branch -v -a
-            git checkout -b test origin/${GITHUB_REF##*/}
+            git checkout -b test origin/$BRANCH
             git pull
             cd ~/dev-back/deploy
-            source deploy.sh ${{GITHUB_REF##*/}}
+            source deploy.sh $BRANCH
             
         
