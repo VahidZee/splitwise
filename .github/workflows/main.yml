@@ -44,12 +44,12 @@ jobs:
             echo $BRANCH
             echo ~/$BRANCH
             [ ! -d "~/$BRANCH" ] && clone http://github.com/${{ github.repository }}.git ~/$BRANCH
-            cd ~/dev-back/
+            cd ~/$BRANCH/
             git fetch origin
             git branch -v -a
-            git checkout -b test origin/$BRANCH
+            git checkout $BRANCH
             git pull
-            cd ~/dev-back/deploy
+            cd ~/$BRANCH/deploy/
             source deploy.sh $BRANCH
             
         
