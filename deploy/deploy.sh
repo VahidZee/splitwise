@@ -1,27 +1,23 @@
 # copy nginx_config files
-if [ -z $2 ]; then
-  PREFIX="dev-"
-else
-  PREFIX=""
-fi
 if [ -z $1 ]; then
   echo "Specify branch name in the first argument"
+  exit
 fi
-
+BRANCH_NAME=$1
 # setup .env variables
-printenv >~/$PREFIX$1/.env
+printenv >~/$BRANCH_NAME/.env
 
 # setup django
 # exporting environmental variables
 set -a
-source ~/venvs/$PREFIX$1/bin/activate
+source ~/venvs/$BRANCH_NAME/bin/activate
 pip install -r ../backend/requirements.txt
 python ../backend/manage.py collectstatic --no-input
 python ./backend/manage.py migrate --no-input
 deactivate
 
 # uwsgi
-for i in $(ls uwsgi/"${PREFIX}"*.ini); do
+for i in $(ls uwsgi/"${$BRANCH_NAME}"*.ini); do
   echo setting up uwsgi $i
   # restarting uwsgi processes
   sudo uwsgi --stop /tmp/$(basename $i .ini).pid
@@ -29,7 +25,7 @@ for i in $(ls uwsgi/"${PREFIX}"*.ini); do
 done
 
 # nginx
-for i in $(ls nginx/"${PREFIX}"*.conf); do
+for i in $(ls nginx/"${$BRANCH_NAME}"*.conf); do
   echo setting up nginx configuration $i
   # move new server config
   sudo yes | cp $i /etc/nginx/sites-available/
