@@ -27,12 +27,12 @@ jobs:
       - name: Deploy on server
         uses: appleboy/ssh-action@v0.1.4
         env:
-          POSTGRESQL_DATABASE: ${{ secrets.POSTGRESQL_DATABASE }}
-          POSTGRESQL_HOST: ${{ secrets.POSTGRESQL_HOST }}
-          POSTGRESQL_PASSWORD: ${{ secrets.POSTGRESQL_PASSWORD }}
-          POSTGRESQL_PORT: ${{ secrets.POSTGRESQL_PORT }}
-          POSTGRESQL_USER: ${{ secrets.POSTGRESQL_USER }}
-          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          POSTGRESQL_DATABASE: "${{ secrets.POSTGRESQL_DATABASE }}"
+          POSTGRESQL_HOST: "${{ secrets.POSTGRESQL_HOST }}"
+          POSTGRESQL_PASSWORD: "${{ secrets.POSTGRESQL_PASSWORD }}"
+          POSTGRESQL_PORT: "${{ secrets.POSTGRESQL_PORT }}"
+          POSTGRESQL_USER: "${{ secrets.POSTGRESQL_USER }}"
+          SECRET_KEY: "${{ secrets.SECRET_KEY }}"
           DEBUG: 1
           BRANCH: ${GITHUB_REF##*/}
         with:
@@ -41,9 +41,9 @@ jobs:
           password: ${{ secrets.SSH_PASS }}
           envs: POSTGRESQL_DATABASE,POSTGRESQL_HOST,POSTGRESQL_PASSWORD,POSTGRESQL_PORT,POSTGRESQL_USER,SECRET_KEY,DEBUG 
           script: |
-            echo $BRANCH
+            echo $BRANCH $POSTGRESQL_PORT
             echo ~/$BRANCH
-            [ ! -d "~/$BRANCH" ] && clone http://github.com/${{ github.repository }}.git ~/$BRANCH
+            [ ! -d "~/$BRANCH" ] && clone "http://github.com/${{ github.repository }}.git" ~/$BRANCH
             cd ~/$BRANCH/
             git fetch origin
             git branch -v -a
