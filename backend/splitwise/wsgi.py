@@ -12,10 +12,9 @@ import os
 from django.core.wsgi import get_wsgi_application
 import dotenv
 
-
-print(os.getcwd())
 try:
-    env_file=dotenv.find_dotenv()
+    env_file = dotenv.find_dotenv()
+    print('loading environment file:', env_file)
     dotenv.load_dotenv(env_file)
 except IOError:
     print('environment file not found')
