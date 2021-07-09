@@ -1,0 +1,54 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Backend Development
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ backend ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Runs a set of commands using the runners shell
+      - name: Branch name
+        run: echo running on branch ${GITHUB_REF##*/}
+      - name: Deploy on server
+        uses: appleboy/ssh-action@v0.1.4
+        env:
+          POSTGRESQL_DATABASE: ${{ secrets.POSTGRESQL_DATABASE }}
+          POSTGRESQL_HOST: ${{ secrets.POSTGRESQL_HOST }}
+          POSTGRESQL_PASSWORD: ${{ secrets.POSTGRESQL_PASSWORD }}
+          POSTGRESQL_PORT: ${{ secrets.POSTGRESQL_PORT }}
+          POSTGRESQL_USER: ${{ secrets.POSTGRESQL_USER }}
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          DEBUG: 1
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASS }}
+          envs: POSTGRESQL_DATABASE,POSTGRESQL_HOST,POSTGRESQL_PASSWORD,POSTGRESQL_PORT,POSTGRESQL_USER,SECRET_KEY,DEBUG 
+          script: |
+            echo ${{GITHUB_REF##*/}}
+            echo "~/${{GITHUB_REF##*/}}"
+            [ ! -d "~/${{GITHUB_REF##*/}}" ] && clone http://github.com/${{GITHUB_REPOSITORY}}.git ~/${{GITHUB_REF##*/}}
+            cd ~/dev-back/
+            git fetch origin
+            git branch -v -a
+            git checkout -b test origin/${GITHUB_REF##*/}
+            git pull
+            cd ~/dev-back/deploy
+            source deploy.sh ${{GITHUB_REF##*/}}
+            
+        
