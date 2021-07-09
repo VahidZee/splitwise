@@ -34,7 +34,7 @@ jobs:
           POSTGRESQL_PORT: ${{ secrets.POSTGRESQL_PORT }}
           POSTGRESQL_USER: ${{ secrets.POSTGRESQL_USER }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          DEBUG: ${{ steps.extract_branch.outputs.branch == 'main' && '1' || '0' }}
+          DEBUG: ${{ steps.extract_branch.outputs.branch == 'main' && '0' || '1' }}
           BRANCH: ${{ steps.extract_branch.outputs.branch }}
         with:
           host: ${{ secrets.SSH_HOST }}
