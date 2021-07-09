@@ -28,7 +28,7 @@ jobs:
       - name: Deploy on server
         uses: appleboy/ssh-action@v0.1.4
         env:
-          POSTGRESQL_DATABASE: ${{ teps.extract_branch.outputs.branch == 'main' && secrets.POSTGRESQL_MAIN_DATABASE || secrets.POSTGRESQL_DEV_DATABASE }}
+          POSTGRESQL_DATABASE: ${{ steps.extract_branch.outputs.branch == 'main' && secrets.POSTGRESQL_MAIN_DATABASE || secrets.POSTGRESQL_DEV_DATABASE }}
           POSTGRESQL_HOST: ${{ secrets.POSTGRESQL_HOST }}
           POSTGRESQL_PASSWORD: ${{ secrets.POSTGRESQL_PASSWORD }}
           POSTGRESQL_PORT: ${{ secrets.POSTGRESQL_PORT }}
