@@ -33,13 +33,13 @@ jobs:
           POSTGRESQL_PORT: "${{ secrets.POSTGRESQL_PORT }}"
           POSTGRESQL_USER: "${{ secrets.POSTGRESQL_USER }}"
           SECRET_KEY: "${{ secrets.SECRET_KEY }}"
-          DEBUG: 1
+          DEBUG: "1"
           BRANCH: ${GITHUB_REF##*/}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           password: ${{ secrets.SSH_PASS }}
-          envs: POSTGRESQL_DATABASE,POSTGRESQL_HOST,POSTGRESQL_PASSWORD,POSTGRESQL_PORT,POSTGRESQL_USER,SECRET_KEY,DEBUG 
+          envs: POSTGRESQL_DATABASE,POSTGRESQL_HOST,POSTGRESQL_PASSWORD,POSTGRESQL_PORT,POSTGRESQL_USER,SECRET_KEY,DEBUG,BRANCH 
           script: |
             echo $BRANCH $POSTGRESQL_PORT
             echo ~/$BRANCH
