@@ -14,7 +14,7 @@ source ~/venvs/$BRANCH_NAME/bin/activate
 pip install -U pip
 pip install -r ../backend/requirements.txt
 python ../backend/manage.py collectstatic --no-input
-python ./backend/manage.py migrate --no-input
+python ../backend/manage.py migrate --no-input
 deactivate
 
 # uwsgi
