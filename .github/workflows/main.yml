@@ -45,7 +45,7 @@ jobs:
           script: |
             echo $BRANCH $POSTGRESQL_PORT
             echo ~/$BRANCH
-            [ ! -d "~/$BRANCH" ] && clone "http://github.com/${{ github.repository }}.git" ~/$BRANCH
+            [ ! -d "~/$BRANCH" ] && git clone "http://github.com/${{ github.repository }}.git" ~/$BRANCH
             cd ~/$BRANCH/
             git fetch origin
             git branch -v -a
