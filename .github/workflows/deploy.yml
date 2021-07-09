@@ -49,7 +49,7 @@ jobs:
           POSTGRESQL_PORT: ${{ secrets.POSTGRESQL_PORT }}
           POSTGRESQL_USER: ${{ secrets.POSTGRESQL_USER }}
           SECRET_KEY: ${{ secrets.SECRET_KEY }}
-          DEBUG: "1"
+          DEBUG: ${{ steps.extract_branch.outputs.branch == "main" }}
           BRANCH: ${{ steps.extract_branch.outputs.branch }}
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -58,6 +58,13 @@ jobs:
           envs: POSTGRESQL_DATABASE,POSTGRESQL_HOST,POSTGRESQL_PASSWORD,POSTGRESQL_PORT,POSTGRESQL_USER,SECRET_KEY,DEBUG,BRANCH 
           script: |
             echo Deploying branch: $BRANCH
+            export POSTGRESQL_DATABASE=$POSTGRESQL_DATABASE
+            export POSTGRESQL_HOST=$POSTGRESQL_HOST
+            export POSTGRESQL_PASSWORD=$POSTGRESQL_PASSWORD
+            export POSTGRESQL_PORT=$POSTGRESQL_PORT
+            export POSTGRESQL_USER=$POSTGRESQL_USER
+            export SECRET_KEY=$SECRET_KEY
+            export DEBUG=$DEBUG
             printenv
             set -a
             [ ! -d "~/$BRANCH" ] && git clone "http://github.com/${{ github.repository }}.git" ~/$BRANCH
