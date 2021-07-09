@@ -42,6 +42,8 @@ jobs:
           envs: POSTGRESQL_DATABASE,POSTGRESQL_HOST,POSTGRESQL_PASSWORD,POSTGRESQL_PORT,POSTGRESQL_USER,SECRET_KEY,DEBUG,BRANCH 
           script: |
             echo Deploying branch: $BRANCH
+            printenv
+            set -a
             [ ! -d "~/$BRANCH" ] && git clone "http://github.com/${{ github.repository }}.git" ~/$BRANCH
             [ ! -d "~/venvs" ] && mkdir ~/venvs
             [ ! -d "~/venvs/$BRANCH" ] && virtualenv -p python3 ~/venvs/$BRANCH
