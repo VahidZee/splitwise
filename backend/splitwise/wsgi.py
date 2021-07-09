@@ -12,10 +12,13 @@ import os
 from django.core.wsgi import get_wsgi_application
 import dotenv
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'splitwise.settings')
+
 print(os.getcwd())
-if os.path.isfile('../.env'):
-    dotenv.load_dotenv('.env')
-else:
+try:
+    env_file=dotenv.find_dotenv()
+    dotenv.load_dotenv(env_file)
+except IOError:
     print('environment file not found')
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'splitwise.settings')
 application = get_wsgi_application()
