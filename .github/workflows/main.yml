@@ -23,7 +23,7 @@ jobs:
     steps:
       # Runs a set of commands using the runners shell
       - name: Branch name
-        run: echo running on branch ${GITHUB_REF##*/} ${{ github.ref }}
+        run: echo running on branch ${GITHUB_REF##*/} ${{ github.ref##*/ }}
       - name: Deploy on server
         uses: appleboy/ssh-action@v0.1.4
         env:
@@ -34,7 +34,7 @@ jobs:
           POSTGRESQL_USER: "${{ secrets.POSTGRESQL_USER }}"
           SECRET_KEY: "${{ secrets.SECRET_KEY }}"
           DEBUG: "1"
-          BRANCH: ${GITHUB_REF##*/}
+          BRANCH: ${{ github.ref##*/ }}
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
