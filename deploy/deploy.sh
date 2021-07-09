@@ -32,7 +32,7 @@ for i in $(ls nginx/"${BRANCH_NAME}"*.conf); do
   sudo mkdir -p /var/files/$BRANCH_NAME
   sudo chown -R 777 /var/files/$BRANCH_NAME
   # move new server config
-  sudo yes | cp $i /etc/nginx/sites-available/
+  sudo yes | sudo cp $i /etc/nginx/sites-available/
   # enable new server config
   sudo rm /etc/nginx/sites-enabled/$(basename $i)
   sudo ln -s /etc/nginx/sites-available/$(basename $i) /etc/nginx/sites-enabled/
