@@ -1,23 +1,25 @@
 <template>
   <div id="app">
-    <router-view></router-view>
+    <slider-nav></slider-nav>
   </div>
 </template>
 
 <script>
+
+import SliderNav from "@/components/SliderNav";
+
 export default {
-  name: 'App',
-  components: {},
+  name: "Login2",
+  components: {SliderNav}
 }
 </script>
 
-<style>
+<style scoped>
 #app {
   background: black;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  border-radius: 6px;
 }
 
 @font-face {
