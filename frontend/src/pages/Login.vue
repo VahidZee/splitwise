@@ -3,8 +3,8 @@
     <div class="header">
       <div class="title">Donger</div>
       <div>
-        <sui-button @click="toggleSignIn">Sign in</sui-button>
-        <sui-button @click="toggleSignUp">Sign up</sui-button>
+        <button @click="toggleSignIn">Sign in</button>
+        <button @click="toggleSignUp">Sign up</button>
       </div>
     </div>
     <div class="sign" v-show="signBox">
