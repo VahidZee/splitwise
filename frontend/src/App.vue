@@ -1,17 +1,17 @@
 <template>
   <div id="app">
     <router-view></router-view>
-    <main-footer></main-footer>
+<!--    <main-footer></main-footer>-->
   </div>
 </template>
 
 <script>
 // import SliderNav from "@/components/SliderNav";
-import MainFooter from "@/components/MainFooter";
+// import MainFooter from "@/components/MainFooter";
 
 export default {
   name: 'App',
-  components: {MainFooter}
+  // components: {MainFooter}
 }
 </script>
 
