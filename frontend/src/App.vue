@@ -13,7 +13,7 @@ export default {
 
 <style>
 #app {
-  background: black;
+  background: gray;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
