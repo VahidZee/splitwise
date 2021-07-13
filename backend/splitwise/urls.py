@@ -18,6 +18,8 @@ from django.urls import path, include
 from rest_framework import routers
 
 router = routers.DefaultRouter()
+router.get_api_root_view().cls.__name__ = "DongerAPIRoot"
+router.get_api_root_view().cls.__doc__ = "Full browsable back-end API of Donger platform"
 
 urlpatterns = [
     path('admin/', admin.site.urls),
