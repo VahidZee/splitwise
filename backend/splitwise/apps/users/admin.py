@@ -4,7 +4,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
 from rest_framework.authtoken.models import TokenProxy
 from rest_framework.authtoken.admin import TokenAdmin as DRF_TokenAdmin
-from .models import User
+from .models import User, Friend
 
 # website configurations
 admin.site.site_header = "Donger Administration"
@@ -23,6 +23,18 @@ class TokenAdmin(DRF_TokenAdmin):
     can_delete = True
 
 
+class FriendsInline(admin.TabularInline):
+    verbose_name = 'friend'
+    verbose_name_plural = 'friends'
+    model = Friend
+    fk_name = 'user'
+    autocomplete_fields = ['friend']
+    fields = ['friend', 'date_added']
+    readonly_fields = ['date_added']
+    can_delete = True
+    extra = 0
+
+
 class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {'fields': ('username', 'phone', 'password')}),
@@ -39,6 +51,7 @@ class UserAdmin(BaseUserAdmin):
         }),
     )
     list_display = ('username', 'email', 'first_name', 'last_name', 'phone', 'is_staff')
+    inlines = [FriendsInline]
 
 
 admin.site.unregister(Group)

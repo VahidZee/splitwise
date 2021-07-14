@@ -4,7 +4,6 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
-# Create your models here.
 class User(AbstractUser):
     phone = PhoneNumberField(
         _('phone number'), blank=True, unique=True, null=True,
@@ -18,3 +17,13 @@ class User(AbstractUser):
     @property
     def user(self):
         return self
+
+
+class Friend(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False, related_name='friends')
+    friend = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False,
+                               related_name='knowns')
+    date_added = models.DateTimeField(_('date added'), auto_now_add=True)
+
+    def __str__(self):
+        return str(self.friend)
