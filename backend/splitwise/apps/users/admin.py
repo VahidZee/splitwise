@@ -1,10 +1,9 @@
 from django.contrib import admin
-
+from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
-
-from rest_framework.authtoken.models import Token
-from django.contrib.auth.models import Group
+from rest_framework.authtoken.models import TokenProxy
+from rest_framework.authtoken.admin import TokenAdmin as DRF_TokenAdmin
 from .models import User
 
 # website configurations
@@ -13,10 +12,15 @@ admin.site.site_title = "Donger"
 admin.site.index_title = "Donger Management"
 
 
-class TokenInline(admin.StackedInline):
-    model = Token
+class TokenAdmin(DRF_TokenAdmin):
+    model = TokenProxy
+    verbose_name = 'token'
+    verbose_name_plural = 'tokens'
+    autocomplete_fields = ['user']
+    fields = ['user', 'key', 'created']
     readonly_fields = ['key', 'created']
-    can_delete = False
+    list_view = ['user__username', 'key', 'created']
+    can_delete = True
 
 
 class UserAdmin(BaseUserAdmin):
@@ -31,12 +35,13 @@ class UserAdmin(BaseUserAdmin):
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('username', 'phone', 'email', 'address', 'password1', 'password2'),
+            'fields': ('username', 'phone', 'email', 'first_name', 'last_name', 'address', 'password1', 'password2'),
         }),
     )
     list_display = ('username', 'email', 'first_name', 'last_name', 'phone', 'is_staff')
-    inlines = [TokenInline]
 
 
 admin.site.unregister(Group)
+admin.site.unregister(TokenProxy)
+admin.site.register(TokenProxy, TokenAdmin)
 admin.site.register(User, UserAdmin)
