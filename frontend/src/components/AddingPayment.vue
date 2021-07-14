@@ -3,13 +3,28 @@
     <sui-form>
       <sui-form-field>
         <sui-header dividing>The group of the payment</sui-header>
-        <sui-dropdown
-            placeholder="Group"
-            search
-            selection
-            :options="groups"
-            v-model="selectedGroup"
-        />
+        <sui-segment style="width: fit-content">
+          <sui-checkbox toggle label="Choose a group" v-model="choosingGroup"/>
+        </sui-segment>
+        <sui-form-field v-if="choosingGroup">
+          <sui-dropdown
+              placeholder="Choose a group"
+              search
+              selection
+              :options="groups"
+              v-model="selectedGroup"
+          />
+        </sui-form-field>
+        <sui-form-field v-else>
+          <sui-dropdown
+              placeholder="Choose friends"
+              search
+              selection
+              multiple
+              :options="friends"
+              v-model="selectedGroup"
+          />
+        </sui-form-field>
       </sui-form-field>
       <sui-form-fields v-if="selectedGroup!=null" fields="two">
         <sui-form-field width="seven">
@@ -97,6 +112,7 @@ export default {
   name: "AddingPayment",
   data() {
     return {
+      choosingGroup: true,
       myself: true,
       myDet: {key: 'me', value: 'Me', text: 'Me', share: null},
       share: "1",
@@ -116,6 +132,11 @@ export default {
             {key: 'surush', value: 'Soroush', text: 'Soroush', share: null},
           ]
         },
+      ],
+      friends: [
+        {key: 'arvin', text: 'Arvin', value: {text: 'Arvin', share: null}},
+        {key: 'surush', text: 'Soroush', value: {text: 'Soroush', share: null}},
+        {key: 'vahid', text: 'Vahid', value: {text: 'Vahid', share: null}},
       ],
       selectedGroup: null,
       location: null,
@@ -188,6 +209,9 @@ export default {
       },
       deep: true
     },
+    choosingGroup: function () {
+      this.selectedGroup = null
+    }
   }
 }
 </script>
@@ -198,8 +222,13 @@ export default {
   top: 15vh;
   left: 25vw;
   width: 50vw;
-  z-index: 1000;
+  height: fit-content;
+  z-index: 900;
   gap: 10px 10px;
-  padding-bottom: 5vh;
+  padding: 10px;
+  margin: 40px;
+  border: solid gray thin;
+  border-radius: 5px;
+  background-color: dimgray;
 }
 </style>

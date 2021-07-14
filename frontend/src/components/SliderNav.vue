@@ -1,5 +1,5 @@
 <template>
-  <div id="slider-nav" v-scroll="scrolling" :style="opacity">
+  <div id="slider-nav" v-scroll="scrolling">
     <div class="dimmer" v-if="isOpen" @click.prevent="isOpen = ! isOpen"></div>
     <div class="wrapper">
       <sui-container>
@@ -116,7 +116,7 @@ export default {
   },
   computed: {
     opacity: function () {
-      return "background: rgba(0,0,0," + 1 + ");"
+      return "background: rgba(127,127,127," + 1 + ");"
     },
     showP: function () {
       return this.open && !this.isLoggedIn()
@@ -134,7 +134,7 @@ export default {
   position: fixed;
   padding: .75rem 0;
   z-index: 1000;
-  background-color: black;
+  background-color: #42b983;
 }
 
 #slider-nav .wrapper {
