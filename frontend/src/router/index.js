@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-// import Home from '@/pages/Home'
+import Dashboard from '@/pages/Dashboard'
 import Login from "@/pages/Login";
 import Login2 from "@/pages/Login2";
 import AddGroup from "../pages/AddGroup";
@@ -30,6 +30,11 @@ export default new VueRouter({
             path: '/add_payment',
             name: 'Add a payment',
             component: AddPayment
+        },
+        {
+            path: '/dash',
+            name: 'Dashboard',
+            component: Dashboard
         },
     ]
 })

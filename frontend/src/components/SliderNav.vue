@@ -22,19 +22,6 @@
           <router-link v-for="item in links" :key="item.id" :to="item.link">
             <sui-list-item>{{ item.name }}</sui-list-item>
           </router-link>
-          <div v-for="menu in menus" :key="menu.id">
-            <sui-accordion-title>
-              <sui-icon name="dropdown"/>
-              {{ menu.name }}
-            </sui-accordion-title>
-            <sui-accordion-content>
-              <sui-list link>
-                <router-link v-for="item in menu.items" :key="item.id" :to="item.link">
-                  <sui-list-item>{{ item.name }}</sui-list-item>
-                </router-link>
-              </sui-list>
-            </sui-accordion-content>
-          </div>
         </sui-accordion>
       </div>
     </div>
@@ -73,29 +60,11 @@ export default {
       isOpen: false,
       isSearch: false,
       search: '',
-      menus: [
-        {
-          id: 1,
-          name: 'Players',
-          items: [{id: 11, name: 'Michael Jordan', link: '/player/2'}, {
-            id: 12,
-            name: 'Cristiano Ronaldo',
-            link: '/player/1'
-          },]
-        },
-        {
-          id: 2,
-          name: 'Teams',
-          items: [{id: 21, name: 'Paris Saint-Germain', link: '/team/1'}, {
-            id: 22,
-            name: 'Manchester United',
-            link: '/team/2'
-          },]
-        },
-      ],
         links: [
-        {id: 3, name: 'Home', link: '/'},
-        {id: 4, name: 'Leagues', link: '/leagues'}
+        {id: 3, name: 'Dashboard', link: '/'},
+        {id: 4, name: 'Add Group', link: '/leagues'},
+          {id: 5, name: 'Add Expense', link: '/leagues'},
+          {id: 6, name: 'Add Friend', link: '/leagues'}
       ]
     }
   },
@@ -147,7 +116,7 @@ export default {
   },
   computed: {
     opacity: function () {
-      return "background: rgba(127,127,127," + 1 + ");"
+      return "background: rgba(0,0,0," + 1 + ");"
     },
     showP: function () {
       return this.open && !this.isLoggedIn()
@@ -165,7 +134,7 @@ export default {
   position: fixed;
   padding: .75rem 0;
   z-index: 1000;
-  background-color: #42b983;
+  background-color: black;
 }
 
 #slider-nav .wrapper {
