@@ -2,12 +2,17 @@ from rest_framework.authentication import TokenAuthentication, SessionAuthentica
 from rest_framework.response import Response
 from . import serializers
 from . import models
+import django.shortcuts as shortcuts
 from rest_framework.decorators import action
 from rest_framework import status
 from rest_framework import viewsets
+from rest_framework import generics
 from .permissions import (IsSelfOrAdmin, IsOwnerOrAdmin)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 import rest_framework.mixins as mixins
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+from rest_framework.authtoken.models import Token
+import rest_framework.serializers as drf_serializers
 
 
 class UserViewSet(
@@ -39,13 +44,17 @@ class UserViewSet(
                 return serializers.UserSerializer
         elif self.action == 'change_password':
             return serializers.ChangePasswordSerializer
+        elif self.action == 'login':
+            return AuthTokenSerializer
+        elif self.action == 'logout':
+            return drf_serializers.Serializer
         return serializers.UserSerializer
 
     def get_permissions(self):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-        if self.action == 'create':
+        if self.action == 'create' or self.action == 'login':
             permission_list = [AllowAny]
         elif self.action == 'update' or self.action == 'change_password':
             permission_list = [IsOwnerOrAdmin]
@@ -54,7 +63,7 @@ class UserViewSet(
         return [permission() for permission in permission_list]
 
     @action(methods=['POST'], detail=False, )
-    def change_password(self, request, username=None):
+    def change_password(self, request, format=None):
         """
         Change user's passcode API.
         """
@@ -78,3 +87,22 @@ class UserViewSet(
             return Response({"response": "successfully changed password"}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(methods=['POST'], detail=False, )
+    def login(self, request, format=None):
+        """
+        Login API: in response to a valid username and passcode an Authentication Token is sent
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        return Response({'token': token.key})
+
+    @action(methods=['POST'], detail=False, )
+    def logout(self, request, format=None):
+        """
+        Logout API: invalidate Authentication token
+        """
+        shortcuts.get_object_or_404(Token, user=request.user).delete()
+        return Response(status=status.HTTP_202_ACCEPTED)
