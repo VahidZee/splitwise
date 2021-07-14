@@ -1,71 +1,80 @@
-from rest_framework.authentication import TokenAuthentication
-from rest_framework import permissions
+from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.response import Response
 from . import serializers
 from . import models
-from rest_framework.decorators import (
-    api_view, permission_classes, authentication_classes, action)
+from rest_framework.decorators import action
 from rest_framework import status
-from rest_framework import views
 from rest_framework import viewsets
-from rest_framework import generics
 from .permissions import (IsSelfOrAdmin, IsOwnerOrAdmin)
-from rest_framework.permissions import AllowAny
-from django.contrib.auth import get_user_model
+from rest_framework.permissions import AllowAny, IsAuthenticated
+import rest_framework.mixins as mixins
 
 
-class UserViewSet(generics.GenericAPIView):
-    def get_queryset(self):
-        return get_user_model().objects.all()
+class UserViewSet(
+    viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+):
+    """
+    API for user information management and retrieval
+    """
 
-    def get_object(self):
-        pass
+    lookup_field = 'username'
+    lookup_url_kwarg = 'username'
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    serializer_class = serializers.EgoUserSerializer
+    queryset = models.User.objects.all()
 
-    @action(methods=['post'], detail=True, permission_classes=[AllowAny])
-    def reset_password(self, request, forget_token):
+    def get_view_name(self):
+        return getattr(self, 'name', 'User API') or 'User API'
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            return serializers.RegistrationSerializer
+        elif self.action == 'retrieve' or self.action == 'update':
+            if self.request.user.is_staff or \
+                    self.request.user.username == self.request.parser_context['kwargs']['username']:
+                return serializers.EgoUserSerializer
+            else:
+                return serializers.UserSerializer
+        elif self.action == 'change_password':
+            return serializers.ChangePasswordSerializer
+        return serializers.UserSerializer
+
+    def get_permissions(self):
         """
-        Reset users password provided with a valid forget_token
+        Instantiates and returns the list of permissions that this view requires.
         """
-        pass
+        if self.action == 'create':
+            permission_list = [AllowAny]
+        elif self.action == 'update' or self.action == 'change_password':
+            permission_list = [IsOwnerOrAdmin]
+        else:
+            permission_list = self.permission_classes
+        return [permission() for permission in permission_list]
 
-    @action(methods=['post'], detail=True, permission_classes=[AllowAny])
-    def forget_password(self):
+    @action(methods=['POST'], detail=False, )
+    def change_password(self, request, username=None):
         """
-        Get (by email) a forget token provided with valid user information
+        Change user's passcode API.
         """
-        pass
+        user = request.user
+        serializer = self.get_serializer(data=request.data)
 
-    @action(methods=['post'], detail=True, permission_classes=[AllowAny])
-    def validate_email(self):
-        pass
+        if serializer.is_valid():
+            # Check old password
+            if not user.check_password(serializer.data.get("old_password")):
+                return Response({"old_password": ["Wrong password."]}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(methods=['post'], detail=True, permission_classes=[AllowAny])
-    def sign_up(self):
-        """
-        Create
-        """
-        pass
+            # confirm the new passwords match
+            new_password = serializer.data.get("new_password")
+            confirm_new_password = serializer.data.get("confirm_new_password")
+            if new_password != confirm_new_password:
+                return Response({"new_password": ["New passwords must match"]}, status=status.HTTP_400_BAD_REQUEST)
 
+            # set_password also hashes the password that the user will get
+            user.set_password(serializer.data.get("new_password"))
+            user.object.save()
+            return Response({"response": "successfully changed password"}, status=status.HTTP_200_OK)
 
-class FriendViewSet(generics.ListAPIView):
-    serializer_class = serializers.FriendSerializer
-
-    def get_queryset(self):
-        """
-        This view should return a list of all the Friends
-        for the currently authenticated user.
-        """
-        user = self.request.user
-        return models.Friend.objects.filter(purchaser=user)
-
-
-class GroupViewSet(generics.ListAPIView):
-    serializer_class = serializers.GroupSerializer
-
-    def get_queryset(self):
-        """
-        This view should return a list of all the Groups
-        for the currently authenticated user.
-        """
-        user = self.request.user
-        return models.Friend.objects.filter(purchaser=user)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

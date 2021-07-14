@@ -16,10 +16,13 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
+import splitwise.apps.users.views as user_views
 
 router = routers.DefaultRouter()
 router.get_api_root_view().cls.__name__ = "DongerAPIRoot"
-router.get_api_root_view().cls.__doc__ = "Full browsable back-end API of Donger platform"
+router.get_api_root_view().cls.__doc__ = "Fully browsable back-end API of the Donger platform"
+
+router.register('user', user_views.UserViewSet, basename='user')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
