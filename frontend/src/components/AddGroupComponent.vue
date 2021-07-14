@@ -52,7 +52,13 @@ export default {
   position: relative;
   top: 100px;
   left: 25vw;
-  z-index: 1000;
+  width: 50vw;
+  height: fit-content;
+  padding: 10px;
+  z-index: 900;
   gap: 10px 10px;
+  border: solid gray thin;
+  border-radius: 5px;
+  background-color: dimgray;
 }
 </style>

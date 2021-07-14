@@ -1,5 +1,5 @@
 <template>
-  <div id="slider-nav" v-scroll="scrolling" :style="opacity">
+  <div id="slider-nav" v-scroll="scrolling">
     <div class="dimmer" v-if="isOpen" @click.prevent="isOpen = ! isOpen"></div>
     <div class="wrapper">
       <sui-container>
@@ -93,7 +93,7 @@ export default {
           },]
         },
       ],
-        links: [
+      links: [
         {id: 3, name: 'Home', link: '/'},
         {id: 4, name: 'Leagues', link: '/leagues'}
       ]
@@ -165,7 +165,7 @@ export default {
   position: fixed;
   padding: .75rem 0;
   z-index: 1000;
-  background-color: #42b983;
+  background-color: black;
 }
 
 #slider-nav .wrapper {
