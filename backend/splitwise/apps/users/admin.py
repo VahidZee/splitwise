@@ -54,7 +54,32 @@ class UserAdmin(BaseUserAdmin):
     inlines = [FriendsInline]
 
 
+class MemberInline(admin.TabularInline):
+    model = models.Member
+    fk_name = 'clique'
+    autocomplete_fields = ['member']
+    search_fields = ['member__username', 'member__phone', 'member__email']
+    extra = 1
+    can_delete = True
+
+
+class CliqueAdmin(admin.ModelAdmin):
+    verbose_name = 'clique'
+    verbose_name_plural = 'cliques'
+    model = models.Clique
+    fieldsets = (
+        (None, {'fields': ('name', 'user', 'date_created')}),
+    )
+    autocomplete_fields = ['user']
+    search_fields = ['user__username', 'user__phone', 'user__email', 'user__first_name', 'user__last_name']
+    readonly_fields = ['date_created']
+    list_display = ['name', 'user']
+    inlines = [MemberInline]
+    can_delete = True
+
+
 admin.site.unregister(AuthGroup)
 admin.site.unregister(TokenProxy)
 admin.site.register(TokenProxy, TokenAdmin)
-admin.site.register(User, UserAdmin)
+admin.site.register(models.User, UserAdmin)
+admin.site.register(models.Clique, CliqueAdmin)
