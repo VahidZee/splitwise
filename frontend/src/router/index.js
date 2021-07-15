@@ -7,6 +7,7 @@ import AddGroup from "../pages/AddGroup";
 import AddPayment from "../pages/AddPayment";
 import AddFriend from "@/pages/AddFriend";
 import UserInfo from "@/pages/UserInfo";
+import Pay from "../pages/Pay";
 
 Vue.use(VueRouter)
 
@@ -37,14 +38,18 @@ export default new VueRouter({
             path: '/dash',
             name: 'Dashboard',
             component: Dashboard
-        },{
+        }, {
             path: '/add_friend',
             name: 'Add a friend',
             component: AddFriend
-        },{
+        }, {
             path: '/user_info',
             name: 'User Info',
             component: UserInfo
+        }, {
+            path: '/pay',
+            name: 'Pay expense',
+            component: Pay
         },
     ]
 })
