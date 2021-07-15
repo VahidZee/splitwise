@@ -19,7 +19,7 @@
           <a class="hand" v-if="mode === 'forgot'" @click="mode = 'login'"> Login... </a>
         </sui-form-field>
         <sui-button secondary type="button" v-on:click.prevent="login()" v-if="mode === 'login'">Login</sui-button>
-        <sui-button secondary type="button" v-on:click.prevent="forgot()" v-if="mode === 'forgot'">Send</sui-button>
+<!--        <sui-button secondary type="button" v-on:click.prevent="forgot()" v-if="mode === 'forgot'">Send</sui-button>-->
       </sui-form>
 
       <sui-form v-if="mode === 'forgot'">
@@ -94,11 +94,11 @@ export default {
       SliderNav.methods.toggle()
       // this.$route()
     },
-    forgot() {
-      this.$http.post(APIService.AUTH + 'password/reset/', this.email, {emulateJSON: true})
-          .then(response => response.json())
-          .catch(error => console.log(error))
-    },
+    // forgot() {
+    //   this.$http.post(APIService.AUTH + 'password/reset/', this.email, {emulateJSON: true})
+    //       .then(response => response.json())
+    //       .catch(error => console.log(error))
+    // },
     resetPass() {
       this.$http.post(APIService.AUTH + 'password/reset/confirm/', this.reset, {emulateJSON: true})
           .then(response => response.json())

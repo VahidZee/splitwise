@@ -36,17 +36,17 @@
     <br/>
     <br/>
     <br/>
-    <div id="add-friend-component">
+    <div id="add-friend-component" v-if="this.input!=={}">
       <sui-form name="groupForm" style="width: 40vw;" >
-        <sui-input placeholder="Username" icon="users" v-model="userName" style="margin-bottom: 10px"/>
-        <sui-input placeholder="First Name" icon="users" v-model="fName" style="margin-bottom: 10px"/>
-        <sui-input placeholder="Last Name" icon="users" v-model="lName" style="margin-bottom: 10px"/>
-        <sui-input placeholder="Email" icon="users" v-model="email" style="margin-bottom: 10px"/>
-        <sui-input placeholder="Address" icon="users" v-model="address" style="margin-bottom: 10px"/>
+        <sui-input placeholder="Username" icon="users" v-model="parsedInput.username" style="margin-bottom: 10px"/>
+        <sui-input placeholder="First Name" icon="users" v-model="input.first_name" style="margin-bottom: 10px"/>
+        <sui-input placeholder="Last Name" icon="users" v-model="input.last_name" style="margin-bottom: 10px"/>
+        <sui-input placeholder="Email" icon="users" v-model="input.email" style="margin-bottom: 10px"/>
+        <sui-input placeholder="Address" icon="users" v-model="input.address" style="margin-bottom: 10px"/>
         <div style="display: flex">
-          <sui-input placeholder="Mobile Number" icon="users" v-model="mobNum" style="margin-bottom: 10px"/>
+          <sui-input placeholder="Mobile Number" icon="users" v-model="input.phone" style="margin-bottom: 10px"/>
 
-          <sui-button style="height: 37px; margin-left: 50px" content="Update Info" type="submit"/>
+          <sui-button style="height: 37px; margin-left: 50px" content="Update Info" type="submit" v-on:click.prevent="send_info()"/>
         </div>
       </sui-form>
     </div>
@@ -54,35 +54,54 @@
 </template>
 
 <script>
+import {APIService} from "@/APIService";
+
 export default {
   name: "UserInfo",
   props: [],
   data() {
     return {
-      user: {
-        username: "admin",
-        email: "sfch199999@gmail.com",
-        first_name: "Soroush",
-        last_name: "Farghadani",
-        address: "kjdsnfajsdfojaijdsfoi",
-        phone: null
-      },
+      // user: {
+      //   username: "admin",
+      //   email: "sfch199999@gmail.com",
+      //   first_name: "Soroush",
+      //   last_name: "Farghadani",
+      //   address: "kjdsnfajsdfojaijdsfoi",
+      //   phone: null
+      // },
+      user: {},
       // userName:this.user.username,
       // fname: this.user.first_name,
       // lname: this.user.last_name,
       // email: this.user.email,
       // address: this.user.address,
       // mobNum: this.user.phone,
-
-      userName:'',
-      fName: '',
-      lName: '',
-      email: '',
-      address: '',
-      mobNum: '',
-
+      input: {},
     }
   },
+  computed:{
+    parsedInput: function() {
+      return this.input
+    }
+  },
+  mounted() {
+    this.get_info();
+  },  methods: {
+    send_info: function () {
+      this.$http.put(APIService.UPDATEINFO, this.input,
+          {emulateJSON: true, headers: {'Authorization': 'Token ' + APIService.KEY}})
+          .catch(error => console.log(error))
+    },
+    get_info: function () {
+      console.log(APIService.KEY)
+      this.$http.get(APIService.UPDATEINFO,
+          {emulateJSON: true, headers: {'Authorization': 'Token ' + APIService.KEY}})
+          .then(response => response.json())
+          .then((data) => {this.user=data
+          this.input=JSON.parse(JSON.stringify(data))})
+          .catch(error => console.log(error))
+    },
+  }
 }
 </script>
 
