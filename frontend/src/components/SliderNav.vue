@@ -110,12 +110,12 @@ export default {
       return APIService.loggedIn;
     },
 
-    // logged() {
-    //   this.$http.post(APIService.USER + 'logged/', {key: APIService.KEY}, {emulateJSON: true})
-    //       .then(response => response.json())
-    //       .then((data) => APIService.loggedIn = data)
-    //       .catch(error => console.log(error))
-    // }
+    logged() {
+      this.$http.post(APIService.USER + 'logged/', {key: APIService.KEY}, {emulateJSON: true})
+          .then(response => response.json())
+          .then((data) => APIService.loggedIn = data)
+          .catch(error => console.log(error))
+    }
   },
   computed: {
     opacity: function () {

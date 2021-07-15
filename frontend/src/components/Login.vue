@@ -110,7 +110,6 @@ export default {
       // if (APIService.loggedIn.logged) {
       //   this.toggle()
       // }
-      // if (APIService.KEY)
       APIService.loggedIn = true
       SliderNav.methods.toggle()
     }
