@@ -103,15 +103,7 @@ export default {
       APIService.loggedIn = false;
     },
     isLoggedIn: function () {
-      this.logged();
       return APIService.loggedIn;
-    },
-
-    logged() {
-      this.$http.post(APIService.USER + 'logged/', {key: APIService.KEY}, {emulateJSON: true})
-          .then(response => response.json())
-          .then((data) => APIService.loggedIn = data)
-          .catch(error => console.log(error))
     }
   },
   computed: {

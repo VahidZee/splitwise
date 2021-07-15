@@ -19,7 +19,7 @@
           <a class="hand" v-if="mode === 'forgot'" @click="mode = 'login'"> Login... </a>
         </sui-form-field>
         <sui-button secondary type="button" v-on:click.prevent="login()" v-if="mode === 'login'">Login</sui-button>
-        <sui-button secondary type="button" v-on:click.prevent="forgot()" v-if="mode === 'forgot'">Send</sui-button>
+<!--        <sui-button secondary type="button" v-on:click.prevent="forgot()" v-if="mode === 'forgot'">Send</sui-button>-->
       </sui-form>
 
       <sui-form v-if="mode === 'forgot'">
@@ -39,7 +39,7 @@
           <label>new password confirm</label>
           <input type="password" name="new_password2" v-model="reset.new_password2" placeholder="Password Confirm"/>
         </sui-form-field>
-        <sui-button positive type="button" v-on:click.prevent="resetPass()">Reset</sui-button>
+<!--        <sui-button positive type="button" v-on:click.prevent="resetPass()">Reset</sui-button>-->
       </sui-form>
     </div>
   </div>
@@ -47,7 +47,7 @@
 
 <script>
 import {APIService} from "@/APIService";
-import SliderNav from "./SliderNav";
+import SliderNav from "@/components/SliderNav";
 
 export default {
   name: "Login",
@@ -74,16 +74,17 @@ export default {
     login: function () {
       this.$http.post(APIService.AUTH + 'login/', this.input, {emulateJSON: true})
           .then(response => response.json())
-          .then((data) => APIService.KEY = data.token)
+          .then(data => APIService.KEY = data.token)
+          .then(console.log(APIService.KEY))
           .then(this.logged())
           .catch(error => console.log(error))
       this.$emit('toggle-modal')
     },
-    forgot() {
-      this.$http.post(APIService.AUTH + 'password/reset/', this.email, {emulateJSON: true})
-          .then(response => response.json())
-          .catch(error => console.log(error))
-    },
+    // forgot() {
+    //   this.$http.post(APIService.AUTH + 'password/reset/', this.email, {emulateJSON: true})
+    //       .then(response => response.json())
+    //       .catch(error => console.log(error))
+    // },
     resetPass() {
       this.$http.post(APIService.AUTH + 'password/reset/confirm/', this.reset, {emulateJSON: true})
           .then(response => response.json())
@@ -99,6 +100,7 @@ export default {
       // }
       APIService.loggedIn = true
       SliderNav.methods.toggle()
+      console.log(APIService.KEY)
     }
   },
 }
