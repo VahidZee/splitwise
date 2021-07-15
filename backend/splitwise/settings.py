@@ -46,9 +46,11 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'phonenumber_field',
     'corsheaders',
+    'djmoney',
 
     # developed apps
-    'splitwise.apps.users'
+    'splitwise.apps.users',
+    'splitwise.apps.expenses'
 ]
 
 MIDDLEWARE = [

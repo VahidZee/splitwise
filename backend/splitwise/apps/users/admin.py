@@ -64,8 +64,8 @@ class MemberInline(admin.TabularInline):
 
 
 class CliqueAdmin(admin.ModelAdmin):
-    verbose_name = 'clique'
-    verbose_name_plural = 'cliques'
+    verbose_name = _('clique')
+    verbose_name_plural = _('cliques')
     model = models.Clique
     fieldsets = (
         (None, {'fields': ('name', 'user', 'date_created')}),

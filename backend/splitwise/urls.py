@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
+from django.conf import settings
+
 import splitwise.apps.users.views as user_views
 
 router = routers.DefaultRouter()
@@ -30,3 +32,8 @@ urlpatterns = [
     path('auth/', include('rest_framework.urls')),
     path('', include(router.urls)),
 ]
+
+if settings.DEBUG:
+    from django.conf.urls.static import static
+
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
