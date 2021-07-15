@@ -20,8 +20,6 @@ class UserViewSet(
     * **retrieve** [`/user/<username>/|GET`]: obtain user information (by looking up username)
     * **update** [`/user/<ego-username>/|PUT`]: update ego user's information (excluding the password)
     * **change_password** [`/user/<ego-username>/change_password|POST`]: update user password (old password is required)
-    * **friend** [`/user/friend/(<username>/)`] friend managements
-
     """
 
     lookup_field = 'username'
@@ -124,52 +122,63 @@ class UserViewSet(
         shortcuts.get_object_or_404(models.Token, user=request.user).delete()
         return Response(status=status.HTTP_202_ACCEPTED)
 
-    @action(methods=['GET', 'POST', 'DELETE'], detail=False,
-            url_path=r'(friend/(?P<username>\w*))|(friend/)',
-            name='Friend', url_name='friend-api'
-            )
-    def friend(self, request, username=None, format=None):
-        """
-        APIs for retrieving and managing currently logged in user's friends.
 
-        **Permissions**:
+class FriendViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.ListModelMixin,
+                    mixins.DestroyModelMixin, mixins.CreateModelMixin):
+    """
+    APIs for retrieving and managing currently logged in user's friends.
 
-        - _Authentication_ is required
+    **Permissions**:
 
-        **Actions & Endpoints**:
+    - _Authentication_ is required
 
-        - performing `GET` on `/user/friend/` lists all friends for the currently logged in user
-        - performing `GET` on `/user/friend/<username>/` retrieves information for a specific friend of the currently
-        logged in user; if no such friend was found `404 status` code will be returned
-        - performing `POST` on `/user/friend/<username>/` will add the specified user to the currently logged in user's
-        friend list; `201 status` code will be returned upon success
-        - performing `DELETE` on `/user/friend/<username>/` will delete the specified user from the currently logged in
-         user's friend list; `202 status` code will be returned upon success
-        """
-        if request.method == 'GET':
-            if username:
-                return Response(
-                    serializers.FriendSerializer(shortcuts.get_object_or_404(
-                        models.Friend, friend__username=username, user=request.user)).data,
-                    status=status.HTTP_200_OK)
-            friends = models.Friend.objects.filter(user=request.user)
-            return Response(serializers.FriendSerializer(friends, many=True).data, status=status.HTTP_200_OK)
-        if request.method == 'POST':
-            if not username:
-                return Response({'detail': 'No username was specified!'},
-                                status=status.HTTP_406_NOT_ACCEPTABLE)
-            friend = shortcuts.get_object_or_404(models.User, username=username)
-            if request.user != friend:
-                friend_obj = models.Friend(user=request.user, friend=friend)
-                friend_obj.save()
-                return Response(status=status.HTTP_201_CREATED)
-            else:
-                return Response({'detail': 'You cannot add yourself as a friend!'},
-                                status=status.HTTP_406_NOT_ACCEPTABLE)
-        if request.method == 'DELETE':
-            if not username:
-                return Response({'detail': 'No username was specified!'},
-                                status=status.HTTP_406_NOT_ACCEPTABLE)
-            friend_obj = shortcuts.get_object_or_404(models.Friend, friend__username=username, user=request.user)
-            friend_obj.delete()
-            return Response(status=status.HTTP_202_ACCEPTED)
+    **Actions & Endpoints**:
+
+    - performing `GET` on `/user/friend/` lists all friends for the currently logged in user
+    - performing `GET` on `/user/friend/<username>/` retrieves information for a specific friend of the currently
+    logged in user; if no such friend was found `404 status` code will be returned
+    - performing `POST` on `/user/friend/<username>/` will add the specified user to the currently logged in user's
+    friend list; `201 status` code will be returned upon success
+    - performing `DELETE` on `/user/friend/<username>/` will delete the specified user from the currently logged in
+     user's friend list; `204 status` code will be returned upon success
+    """
+    queryset = models.Friend.objects.all()
+    permission_classes = [drf_permissions.IsAuthenticated]
+    authentication_classes = [SessionAuthentication, TokenAuthentication]
+    lookup_field = 'friend__username'
+    lookup_url_kwarg = 'username'
+    serializer_class = serializers.FriendSerializer
+
+    def get_serializer_class(self):
+        if self.action in ['retrieve', 'list']:
+            return serializers.FriendSerializer
+        if self.action == 'create':
+            return serializers.UsernameSerializer
+        return drf_serializers.Serializer
+
+    def filter_queryset(self, queryset):
+        return queryset.filter(user=self.request.user)
+
+    def destroy(self, request, username=None, format=None):
+        if not username:
+            return Response({'detail': 'No username was specified!'},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
+        friend_obj = self.get_object()
+        self.perform_destroy(friend_obj)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        username = serializer.data['username']
+        if not username:
+            return Response({'detail': 'No username was specified!'},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)
+        friend = shortcuts.get_object_or_404(models.User, username=username)
+        if request.user != friend:
+            friend_obj = models.Friend(user=request.user, friend=friend)
+            friend_obj.save()
+            return Response(status=status.HTTP_201_CREATED)
+        else:
+            return Response({'detail': 'You cannot add yourself as a friend!'},
+                            status=status.HTTP_406_NOT_ACCEPTABLE)

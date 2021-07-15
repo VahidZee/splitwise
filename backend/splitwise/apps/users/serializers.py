@@ -58,6 +58,10 @@ class FriendSerializer(utils.FlattenMixin, serializers.ModelSerializer):
         composite_names = False
 
 
+class UsernameSerializer(serializers.Serializer):
+    username = serializers.CharField(label=_("Username"))
+
+
 class EgoUserSerializer(PrivateUserSerializer):
     class Meta:
         model = models.User

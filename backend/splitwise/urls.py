@@ -23,6 +23,7 @@ router.get_api_root_view().cls.__name__ = "DongerAPIRoot"
 router.get_api_root_view().cls.__doc__ = "Fully browsable back-end API of the Donger platform"
 
 router.register('user', user_views.UserViewSet, basename='user')
+router.register('friend', user_views.FriendViewSet, basename='friend')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
