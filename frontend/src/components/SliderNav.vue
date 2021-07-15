@@ -60,11 +60,11 @@ export default {
       isOpen: false,
       isSearch: false,
       search: '',
-        links: [
+      links: [
         {id: 3, name: 'Dashboard', link: '/'},
         {id: 4, name: 'Add Group', link: '/leagues'},
-          {id: 5, name: 'Add Expense', link: '/leagues'},
-          {id: 6, name: 'Add Friend', link: '/leagues'}
+        {id: 5, name: 'Add Expense', link: '/leagues'},
+        {id: 6, name: 'Add Friend', link: '/leagues'}
       ]
     }
   },
@@ -100,11 +100,11 @@ export default {
           .then((data) => APIService.KEY = data.key)
           .then(this.logged())
           .catch(error => console.log(error))
-      APIService.loggedIn.logged = false;
+      APIService.loggedIn = false;
     },
     isLoggedIn: function () {
       this.logged();
-      return APIService.loggedIn.logged;
+      return APIService.loggedIn;
     },
 
     logged() {

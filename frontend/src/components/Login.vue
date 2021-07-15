@@ -47,6 +47,7 @@
 
 <script>
 import {APIService} from "@/APIService";
+import SliderNav from "./SliderNav";
 
 export default {
   name: "Login",
@@ -97,7 +98,7 @@ export default {
       //   this.toggle()
       // }
       APIService.loggedIn = true
-      this.toggle()
+      SliderNav.methods.toggle()
     }
   },
 }
