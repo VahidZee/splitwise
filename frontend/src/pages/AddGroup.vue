@@ -1,17 +1,16 @@
 <template>
   <div id="app">
-    <slider-nav></slider-nav>
     <add-group-component></add-group-component>
   </div>
 </template>
 
 <script>
-import SliderNav from "../components/SliderNav";
+// import SliderNav from "../components/SliderNav";
 import AddGroupComponent from "../components/AddGroupComponent";
 
 export default {
   name: "AddGroup",
-  components: {SliderNav, AddGroupComponent}
+  components: {AddGroupComponent}
 }
 </script>
 

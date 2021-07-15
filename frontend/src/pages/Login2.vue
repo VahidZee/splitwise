@@ -1,16 +1,17 @@
 <template>
   <div id="app">
-    <slider-nav></slider-nav>
+    <!--    <slider-nav></slider-nav>-->
+
   </div>
 </template>
 
 <script>
 
-import SliderNav from "@/components/SliderNav";
+// import SliderNav from "@/components/SliderNav";
 
 export default {
   name: "Login2",
-  components: {SliderNav}
+  // components: {SliderNav}
 }
 </script>
 

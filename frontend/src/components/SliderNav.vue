@@ -8,7 +8,7 @@
                     circular></sui-button>
         <sui-button @click="goBack" icon="arrow left" floated="left" color="red" basic inverted
                     circular></sui-button>
-        <sui-button @click="toggle" icon="user" floated="right" basic inverted circular><span
+        <sui-button @click.native="toggle" icon="user" floated="right" basic inverted circular><span
             v-if="isLoggedIn()">sign out</span></sui-button>
         <!--        <sui-button icon="search" floated="right" basic inverted circular @click="toggleSearch">-->
         <!--          <sui-input v-if="isSearch" v-model="search" class="transparent inverted search-input"-->
@@ -27,7 +27,7 @@
     </div>
 
     <div>
-      <sui-modal v-model="open" v-if="isLoggedIn">
+      <sui-modal v-model="open">
         <sui-modal-header>
           <sui-button-group size="large" :widths="2">
             <sui-button @click.native="changeFormType('login')" content="Login"
@@ -37,7 +37,7 @@
                         :active="form_type === 'signup'"/>
           </sui-button-group>
         </sui-modal-header>
-        <login v-on:toggle-modal="toggle" v-if="form_type === 'login'" nav="this"></login>
+        <login v-if="form_type === 'login'" nav="this"></login>
         <signup v-if="form_type === 'signup'"></signup>
       </sui-modal>
     </div>
@@ -62,7 +62,7 @@ export default {
       search: '',
       links: [
         {id: 3, name: 'Dashboard', link: '/'},
-        {id: 4, name: 'Add Group', link: '/leagues'},
+        {id: 4, name: 'Add Group', link: '/add_group'},
         {id: 5, name: 'Add Expense', link: '/leagues'},
         {id: 6, name: 'Add Friend', link: '/leagues'}
       ]
@@ -93,23 +93,24 @@ export default {
       this.form_type = value;
     },
     signOut() {
-      this.$http.post(APIService.AUTH + 'logout/', {
-        token: APIService.KEY
-      }, {
+      this.$http.post(APIService.AUTH + 'logout/', '', {
         emulateJSON: true,
-        headers: {'token': APIService.KEY}
+        headers: {'Authorization': 'Token ' + APIService.KEY}
       })
-          .then(response => response.json())
-          .then((data) => APIService.KEY = data.token)
+          .then(response => response.status)
+          .then((data) => {
+            // APIService.KEY = data.token;
+            console.log(data)
+          })
           // .then(this.logged())
           .catch(error => console.log(error))
       APIService.loggedIn = false;
+      APIService.KEY = 'unknown';
     },
     isLoggedIn: function () {
       // this.logged();
       return APIService.loggedIn;
     },
-
     logged() {
       this.$http.post(APIService.USER + 'logged/', {key: APIService.KEY}, {emulateJSON: true})
           .then(response => response.json())
@@ -124,7 +125,6 @@ export default {
     showP: function () {
       return this.open && !this.isLoggedIn()
     }
-
   },
   mounted() {
     // this.logged()

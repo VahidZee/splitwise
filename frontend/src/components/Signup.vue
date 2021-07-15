@@ -21,16 +21,16 @@
         </sui-form-field>
         <sui-button secondary type="button" v-on:click="signup()">Sign Up</sui-button>
       </sui-form>
-      <sui-form>
-        <sui-form-field>
-          <label>Verification Code</label>
-          <input type="text" name="key" v-model="activate_input.key" placeholder="check your mail..."/>
-        </sui-form-field>
-        <sui-form-field>
-          <a class="hand" v-if="mode === 'activate'" @click="mode = 'signup'"> back to form... </a>
-        </sui-form-field>
-        <sui-button type="button" positive v-on:click="activate()">activate</sui-button>
-      </sui-form>
+      <!--      <sui-form>-->
+      <!--        <sui-form-field>-->
+      <!--          <label>Verification Code</label>-->
+      <!--          <input type="text" name="key" v-model="activate_input.key" placeholder="check your mail..."/>-->
+      <!--        </sui-form-field>-->
+      <!--        <sui-form-field>-->
+      <!--          <a class="hand" v-if="mode === 'activate'" @click="mode = 'signup'"> back to form... </a>-->
+      <!--        </sui-form-field>-->
+      <!--        <sui-button type="button" positive v-on:click="activate()">activate</sui-button>-->
+      <!--      </sui-form>-->
     </div>
 
   </div>
@@ -64,8 +64,8 @@ export default {
     signup() {
       this.$http.post(APIService.AUTH + "", this.input, {emulateJSON: true})
           .then(response => response.json())
-          .then((data) => APIService.KEY = data.key)
-          .then(this.logged())
+          .then((data) => console.log(data.username))
+          // .then(this.logged())
           .finally(() => this.mode = 'activate');
     },
     activate() {

@@ -90,7 +90,9 @@ export default {
             console.log(error);
             console.log(APIService.loggedIn);
           })
-      this.$emit('toggle-modal')
+      // this.$emit('toggleModal')
+      SliderNav.methods.toggle()
+      // this.$route()
     },
     forgot() {
       this.$http.post(APIService.AUTH + 'password/reset/', this.email, {emulateJSON: true})
@@ -112,6 +114,7 @@ export default {
       // }
       APIService.loggedIn = true
       SliderNav.methods.toggle()
+      return true
     }
   },
 }

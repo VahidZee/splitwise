@@ -6,6 +6,8 @@ export const APIService = {
     MATCH: 'http://127.0.0.1:8000/match/',
     USER: 'http://127.0.0.1:8000/user/',
     AUTH: 'https://dev-api.donger.ir/user/',
+    GROUP: 'https://dev-api.donger.ir/clique/',
+    FRIEND: 'https://dev-api.donger.ir/friend/',
     TEAM: 'http://127.0.0.1:8000/team/',
     LEAGUE: 'http://127.0.0.1:8000/league/',
     SUBS: 'http://127.0.0.1:8000/user/',
