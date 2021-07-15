@@ -73,10 +73,23 @@ export default {
   methods: {
     login: function () {
       this.$http.post(APIService.AUTH + 'login/', this.input, {emulateJSON: true})
-          .then(response => response.json())
-          .then((data) => APIService.KEY = data.token)
+          .then(response => response.json(), response => {
+            console.log(response);
+            APIService.loggedIn = false;
+            APIService.KEY = 'unknown';
+          })
+          .then((data) => {
+            if ('token' in data) {
+              APIService.KEY = data.token;
+            } else {
+              console.log(APIService.KEY);
+            }
+          })
           .then(this.logged())
-          .catch(error => console.log(error))
+          .catch(error => {
+            console.log(error);
+            console.log(APIService.loggedIn);
+          })
       this.$emit('toggle-modal')
     },
     forgot() {
@@ -97,6 +110,7 @@ export default {
       // if (APIService.loggedIn.logged) {
       //   this.toggle()
       // }
+      // if (APIService.KEY)
       APIService.loggedIn = true
       SliderNav.methods.toggle()
     }

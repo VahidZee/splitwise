@@ -95,24 +95,27 @@ export default {
     signOut() {
       this.$http.post(APIService.AUTH + 'logout/', {
         token: APIService.KEY
-      }, {emulateJSON: true})
+      }, {
+        emulateJSON: true,
+        headers: {'token': APIService.KEY}
+      })
           .then(response => response.json())
-          .then((data) => APIService.KEY = data.key)
-          .then(this.logged())
+          .then((data) => APIService.KEY = data.token)
+          // .then(this.logged())
           .catch(error => console.log(error))
       APIService.loggedIn = false;
     },
     isLoggedIn: function () {
-      this.logged();
+      // this.logged();
       return APIService.loggedIn;
     },
 
-    logged() {
-      this.$http.post(APIService.USER + 'logged/', {key: APIService.KEY}, {emulateJSON: true})
-          .then(response => response.json())
-          .then((data) => APIService.loggedIn = data)
-          .catch(error => console.log(error))
-    }
+    // logged() {
+    //   this.$http.post(APIService.USER + 'logged/', {key: APIService.KEY}, {emulateJSON: true})
+    //       .then(response => response.json())
+    //       .then((data) => APIService.loggedIn = data)
+    //       .catch(error => console.log(error))
+    // }
   },
   computed: {
     opacity: function () {
