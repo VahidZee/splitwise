@@ -64,7 +64,8 @@ export default {
         {id: 3, name: 'Dashboard', link: '/'},
         {id: 4, name: 'Add Group', link: '/add_group'},
         {id: 5, name: 'Add Expense', link: '/leagues'},
-        {id: 6, name: 'Add Friend', link: '/leagues'}
+        {id: 6, name: 'Add Friend', link: '/leagues'},
+        {id: 7, name: 'User Info', link: '/user_info'},
       ]
     }
   },
