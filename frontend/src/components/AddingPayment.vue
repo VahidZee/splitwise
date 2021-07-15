@@ -187,7 +187,11 @@ export default {
     },
     paidAmount: function (nval, oval) {
       let len = this.selectedGroup.length + 1
-      if (oval && oval > 0) {
+      if (this.share === "1") {
+        for (let member of this.selectedGroup) {
+          member.share = nval / len;
+        }
+      } else if (oval && oval > 3) {
         for (let member of this.selectedGroup) {
           member.share = member.share * nval / oval;
         }
@@ -223,7 +227,7 @@ export default {
   left: 25vw;
   width: 50vw;
   height: fit-content;
-  z-index: 900;
+  z-index: 1001;
   gap: 10px 10px;
   padding: 10px;
   margin: 40px;

@@ -3,17 +3,17 @@
     <div class="dimmer" v-if="isOpen" @click.prevent="isOpen = ! isOpen"></div>
     <div class="wrapper">
       <sui-container>
-        <sui-header class="logo large" inverted>LOGO</sui-header>
+        <sui-header class="logo large" inverted>DONGER</sui-header>
         <sui-button @click="isOpen = !isOpen" icon="bars" floated="left" color="red" basic inverted
                     circular></sui-button>
         <sui-button @click="goBack" icon="arrow left" floated="left" color="red" basic inverted
                     circular></sui-button>
         <sui-button @click="toggle" icon="user" floated="right" basic inverted circular><span
-            v-if="isLoggedIn()">sing out</span></sui-button>
-        <sui-button icon="search" floated="right" basic inverted circular @click="toggleSearch">
-          <sui-input v-if="isSearch" v-model="search" class="transparent inverted search-input"
-                     @click.stop=""></sui-input>
-        </sui-button>
+            v-if="isLoggedIn()">sign out</span></sui-button>
+        <!--        <sui-button icon="search" floated="right" basic inverted circular @click="toggleSearch">-->
+        <!--          <sui-input v-if="isSearch" v-model="search" class="transparent inverted search-input"-->
+        <!--                     @click.stop=""></sui-input>-->
+        <!--        </sui-button>-->
       </sui-container>
     </div>
     <div class="ui wide sidebar inverted vertical menu" :class="{visible: isOpen}" style="border: none">
@@ -61,10 +61,10 @@ export default {
       isSearch: false,
       search: '',
         links: [
-        {id: 3, name: 'Dashboard', link: '/dash'},
-        {id: 4, name: 'Add Group', link: '/add_group'},
-          {id: 5, name: 'Add Expense', link: '/add_payment'},
-          {id: 6, name: 'Add Friend', link: '/add_friend'}
+        {id: 3, name: 'Dashboard', link: '/'},
+        {id: 4, name: 'Add Group', link: '/leagues'},
+          {id: 5, name: 'Add Expense', link: '/leagues'},
+          {id: 6, name: 'Add Friend', link: '/leagues'}
       ]
     }
   },
@@ -134,7 +134,7 @@ export default {
   position: fixed;
   padding: .75rem 0;
   z-index: 1000;
-  background-color: #42b983;
+  /*background-color: #42b983;*/
 }
 
 #slider-nav .wrapper {

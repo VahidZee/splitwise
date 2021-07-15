@@ -5,12 +5,10 @@ export const APIService = {
     PLAYER: 'http://127.0.0.1:8000/player/',
     MATCH: 'http://127.0.0.1:8000/match/',
     USER: 'http://127.0.0.1:8000/user/',
-    AUTH: 'http://127.0.0.1:8000/rest-auth/',
+    AUTH: 'https://dev-api.donger.ir/user/',
     TEAM: 'http://127.0.0.1:8000/team/',
-    LEAGUE:'http://127.0.0.1:8000/league/',
-    SUBS:'http://127.0.0.1:8000/user/',
-    loggedIn: {
-        logged: false
-    },
+    LEAGUE: 'http://127.0.0.1:8000/league/',
+    SUBS: 'http://127.0.0.1:8000/user/',
+    loggedIn: false,
     KEY: 'unknown',
 };
