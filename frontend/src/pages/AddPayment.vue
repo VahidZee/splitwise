@@ -1,17 +1,15 @@
 <template>
   <div id="app">
-    <slider-nav></slider-nav>
     <adding-payment></adding-payment>
   </div>
 </template>
 
 <script>
-import SliderNav from "../components/SliderNav";
 import AddingPayment from "../components/AddingPayment";
 
 export default {
   name: "AddPayment",
-  components: {SliderNav, AddingPayment},
+  components: {AddingPayment},
 }
 </script>
 

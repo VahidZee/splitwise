@@ -108,6 +108,8 @@
 </template>
 
 <script>
+import {APIService} from "../APIService";
+
 export default {
   name: "AddingPayment",
   data() {
@@ -119,25 +121,8 @@ export default {
       disableInput: true,
       shareIcon: "dollar",
       paidAmount: null,
-      groups: [
-        {
-          key: 'g1', text: 'Group 1', value: [
-            {key: 'arvin', value: 'Arvin', text: 'Arvin', share: null},
-            {key: 'vahid', value: 'Vahid', text: 'Vahid', share: null},
-          ]
-        },
-        {
-          key: 'g2', text: 'Group 2', value: [
-            {key: 'arvin', value: 'Arvin', text: 'Arvin', share: null},
-            {key: 'surush', value: 'Soroush', text: 'Soroush', share: null},
-          ]
-        },
-      ],
-      friends: [
-        {key: 'arvin', text: 'Arvin', value: {text: 'Arvin', share: null}},
-        {key: 'surush', text: 'Soroush', value: {text: 'Soroush', share: null}},
-        {key: 'vahid', text: 'Vahid', value: {text: 'Vahid', share: null}},
-      ],
+      groups: null,
+      friends: null,
       selectedGroup: null,
       location: null,
       description: null,
@@ -216,6 +201,36 @@ export default {
     choosingGroup: function () {
       this.selectedGroup = null
     }
+  },
+  mounted() {
+    this.$http.get(APIService.FRIEND + '', {
+      emulateJSON: true,
+      headers: {'Authorization': 'Token ' + APIService.KEY}
+    })
+        .then(response => response.json())
+        .then((data) => {
+          this.friends = [];
+          for (let friend of data) {
+            this.friends.push({
+              text: friend.username, key: friend.username, value: {text: friend.username, share: null}
+            })
+          }
+        })
+    this.$http.get(APIService.GROUP + '', {
+      emulateJSON: true,
+      headers: {'Authorization': 'Token ' + APIService.KEY}
+    })
+        .then(response => response.json())
+        .then((data) => {
+          this.groups = [];
+          for (let group of data) {
+            var membs = []
+            for (let member of group.members) {
+              membs.push({text: member.username, key: member.username, value: member.username, share: null})
+            }
+            this.groups.push({text: group.name, key: group.id, value: membs})
+          }
+        })
   }
 }
 </script>
