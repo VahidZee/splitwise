@@ -44,6 +44,13 @@ class ChangePasswordSerializer(serializers.Serializer):
     confirm_new_password = serializers.CharField(required=True, write_only=True, style={'input_type': 'password'})
 
 
+class ForgetPasswordSerializer(serializers.Serializer):
+    # todo
+    token = serializers.CharField(required=True, write_only=True)
+    new_password = serializers.CharField(required=True, write_only=True, style={'input_type': 'password'})
+    confirm_new_password = serializers.CharField(required=True, write_only=True, style={'input_type': 'password'})
+
+
 class PrivateUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.User
@@ -58,8 +65,25 @@ class FriendSerializer(utils.FlattenMixin, serializers.ModelSerializer):
         composite_names = False
 
 
+class MemberSerializer(utils.FlattenMixin, serializers.ModelSerializer):
+    class Meta:
+        fields = []
+        model = models.Member
+        flatten = [('member', PrivateUserSerializer)]
+        composite_names = False
+
+
+class CliqueSerializer(serializers.ModelSerializer):
+    members = MemberSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = models.Clique
+        fields = ['date_created', 'name', 'members', 'id']
+        read_only_fields = ['date_created', 'members', 'id']
+
+
 class UsernameSerializer(serializers.Serializer):
-    username = serializers.CharField(label=_("Username"))
+    username = serializers.CharField(label=_("Username"), allow_blank=False, required=True)
 
 
 class EgoUserSerializer(PrivateUserSerializer):

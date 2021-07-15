@@ -16,12 +16,12 @@ class FriendViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.L
 
     **Actions & Endpoints**:
 
-    - performing `GET` on `friend/` lists all friends for the currently logged in user
-    - performing `GET` on `friend/<username>/` retrieves information for a specific friend of the currently
+    - performing `GET` on `/friend/` lists all friends for the currently logged in user
+    - performing `GET` on `/friend/<username>/` retrieves information for a specific friend of the currently
     logged in user; if no such friend was found `404 status` code will be returned
-    - performing `POST` on `friend/<username>/` will add the specified user to the currently logged in user's
+    - performing `POST` on `/friend/` will add the specified user (by username) to the currently logged in user's
     friend list; `201 status` code will be returned upon success
-    - performing `DELETE` on `friend/<username>/` will delete the specified user from the currently logged in
+    - performing `DELETE` on `/friend/<username>/` will delete the specified user from the currently logged in
      user's friend list; `204 status` code will be returned upon success
     """
     queryset = models.Friend.objects.all()
@@ -53,9 +53,6 @@ class FriendViewSet(viewsets.GenericViewSet, mixins.RetrieveModelMixin, mixins.L
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         username = serializer.data['username']
-        if not username:
-            return Response({'detail': 'No username was specified!'},
-                            status=status.HTTP_406_NOT_ACCEPTABLE)
         friend = shortcuts.get_object_or_404(models.User, username=username)
         if request.user != friend:
             friend_obj = models.Friend(user=request.user, friend=friend)

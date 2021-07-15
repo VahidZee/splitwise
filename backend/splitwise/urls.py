@@ -24,7 +24,7 @@ router.get_api_root_view().cls.__doc__ = "Fully browsable back-end API of the Do
 
 router.register('user', user_views.UserViewSet, basename='user')
 router.register('friend', user_views.FriendViewSet, basename='friend')
-
+router.register('clique', user_views.CliqueViewSet, basename='clique')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('rest_framework.urls')),
