@@ -5,6 +5,7 @@ import Login from "@/pages/Login";
 import Login2 from "@/pages/Login2";
 import AddGroup from "../pages/AddGroup";
 import AddPayment from "../pages/AddPayment";
+import AddFriend from "@/pages/AddFriend";
 
 Vue.use(VueRouter)
 
@@ -35,6 +36,10 @@ export default new VueRouter({
             path: '/dash',
             name: 'Dashboard',
             component: Dashboard
+        },{
+            path: '/add_friend',
+            name: 'Add a friend',
+            component: AddFriend
         },
     ]
 })
