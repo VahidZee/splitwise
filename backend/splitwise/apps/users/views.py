@@ -20,6 +20,8 @@ class UserViewSet(
     * **retrieve** [`/user/<username>/|GET`]: obtain user information (by looking up username)
     * **update** [`/user/<ego-username>/|PUT`]: update ego user's information (excluding the password)
     * **change_password** [`/user/<ego-username>/change_password|POST`]: update user password (old password is required)
+    * **friend** [`/user/friend/(<username>/)`] friend managements
+
     """
 
     lookup_field = 'username'
@@ -46,6 +48,11 @@ class UserViewSet(
             return AuthTokenSerializer
         elif self.action == 'logout':
             return drf_serializers.Serializer
+        elif self.action == 'friends':
+            if self.request.method == 'GET':
+                return serializers.FriendSerializer
+            else:
+                return drf_serializers.Serializer
         return serializers.UserSerializer
 
     def get_permissions(self):
@@ -56,7 +63,7 @@ class UserViewSet(
             permission_list = [drf_permissions.AllowAny]
         elif self.action in ['update', 'change_password', 'logout', 'friends']:
             permission_list = [permissions.IsSelfOrAdmin, drf_permissions.IsAuthenticated]
-        elif self.action == 'retrieve':
+        elif self.action in ['retrieve', 'friend']:
             permission_list = [drf_permissions.IsAuthenticated]
         else:
             permission_list = [drf_permissions.AllowAny]
@@ -116,3 +123,53 @@ class UserViewSet(
         """
         shortcuts.get_object_or_404(models.Token, user=request.user).delete()
         return Response(status=status.HTTP_202_ACCEPTED)
+
+    @action(methods=['GET', 'POST', 'DELETE'], detail=False,
+            url_path=r'(friend/(?P<username>\w*))|(friend/)',
+            name='Friend', url_name='friend-api'
+            )
+    def friend(self, request, username=None, format=None):
+        """
+        APIs for retrieving and managing currently logged in user's friends.
+
+        **Permissions**:
+
+        - _Authentication_ is required
+
+        **Actions & Endpoints**:
+
+        - performing `GET` on `/user/friend/` lists all friends for the currently logged in user
+        - performing `GET` on `/user/friend/<username>/` retrieves information for a specific friend of the currently
+        logged in user; if no such friend was found `404 status` code will be returned
+        - performing `POST` on `/user/friend/<username>/` will add the specified user to the currently logged in user's
+        friend list; `201 status` code will be returned upon success
+        - performing `DELETE` on `/user/friend/<username>/` will delete the specified user from the currently logged in
+         user's friend list; `202 status` code will be returned upon success
+        """
+        if request.method == 'GET':
+            if username:
+                return Response(
+                    serializers.FriendSerializer(shortcuts.get_object_or_404(
+                        models.Friend, friend__username=username, user=request.user)).data,
+                    status=status.HTTP_200_OK)
+            friends = models.Friend.objects.filter(user=request.user)
+            return Response(serializers.FriendSerializer(friends, many=True).data, status=status.HTTP_200_OK)
+        if request.method == 'POST':
+            if not username:
+                return Response({'detail': 'No username was specified!'},
+                                status=status.HTTP_406_NOT_ACCEPTABLE)
+            friend = shortcuts.get_object_or_404(models.User, username=username)
+            if request.user != friend:
+                friend_obj = models.Friend(user=request.user, friend=friend)
+                friend_obj.save()
+                return Response(status=status.HTTP_201_CREATED)
+            else:
+                return Response({'detail': 'You cannot add yourself as a friend!'},
+                                status=status.HTTP_406_NOT_ACCEPTABLE)
+        if request.method == 'DELETE':
+            if not username:
+                return Response({'detail': 'No username was specified!'},
+                                status=status.HTTP_406_NOT_ACCEPTABLE)
+            friend_obj = shortcuts.get_object_or_404(models.Friend, friend__username=username, user=request.user)
+            friend_obj.delete()
+            return Response(status=status.HTTP_202_ACCEPTED)
