@@ -4,7 +4,7 @@ from . import models
 
 class ShareSerializer(serializers.ModelSerializer):
     user = serializers.CharField(allow_null=False)
-    settler = serializers.CharField(allow_null=True)
+    settler = serializers.CharField(allow_null=True, allow_blank=True)
 
     class Meta:
         model = models.Share
@@ -13,7 +13,7 @@ class ShareSerializer(serializers.ModelSerializer):
 
 class ExpenseSerializer(serializers.ModelSerializer):
     creator = serializers.CharField(allow_null=False, read_only=True)
-    payer = serializers.CharField(allow_null=True)
+    payer = serializers.CharField(allow_null=True, allow_blank=True)
     shares = ShareSerializer(many=True, read_only=True)
 
     class Meta:
