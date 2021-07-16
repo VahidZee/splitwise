@@ -9,6 +9,7 @@ export const APIService = {
     UPDATEINFO: 'https://dev-api.donger.ir/user/me/',
     GROUP: 'https://dev-api.donger.ir/clique/',
     FRIEND: 'https://dev-api.donger.ir/friend/',
+    EXPENSE: 'https://dev-api.donger.ir/expense/',
     Expense: 'https://dev-api.donger.ir/expense/',
     Debt: 'https://dev-api.donger.ir/expense/debts/',
     LEAGUE: 'http://127.0.0.1:8000/league/',

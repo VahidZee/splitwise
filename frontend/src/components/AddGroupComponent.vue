@@ -1,6 +1,6 @@
 <template>
   <div id="add-group-component">
-    <sui-form name="groupForm" style="width: 40vw;" v-on:submit.prevent="validateForm()" v-on:>
+    <sui-form name="groupForm" style="width: 40vw;" v-on:submit.prevent="validateForm()">
       <sui-input placeholder="Group name" icon="users" v-model="name" style="margin-bottom: 10px"/>
       <div style="display: flex">
         <sui-form-field style="width: 25vw; height: fit-content; margin-right: 10px; margin-bottom: 0px">

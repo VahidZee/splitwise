@@ -13,13 +13,15 @@
       </sui-form-field>
       <sui-form-field v-if="settler">
         <sui-header>Amount of debt is {{ settler.share }}$</sui-header>
-        <sui-button> Settle Debt</sui-button>
+        <sui-button @click="submitForm"> Settle Debt</sui-button>
       </sui-form-field>
     </sui-form>
   </div>
 </template>
 
 <script>
+import {APIService} from "../APIService";
+
 export default {
   name: "PayComponent",
   data() {
@@ -31,6 +33,41 @@ export default {
       ],
       settler: null,
       creditor: 'Agha Arvin',
+      payID: null,
+    }
+  },
+  mounted() {
+    this.payID = this.$route.params.id
+    this.$http.get(APIService.EXPENSE + this.payID, {
+      emulateJSON: true,
+      headers: {'Authorization': 'Token ' + APIService.KEY}
+    })
+        .then(response => response.json())
+        .then((data) => {
+          this.creditor = data.payer;
+          this.debtors = []
+          for (let debtor of data.shares) {
+            this.debtors.push({
+              text: debtor.user,
+              key: debtor.user,
+              value: {text: debtor.user, share: debtor.share, id: debtor.id}
+            })
+          }
+        })
+  },
+  methods: {
+    submitForm: function () {
+      this.$http.post(APIService.EXPENSE + 'pay/' + this.settler.id, {}, {
+        emulateJSON: true,
+        headers: {'Authorization': 'Token ' + APIService.KEY}
+      }).then(response => response.status).then((data) => {
+        console.log(data);
+        if (data === 202) {
+          alert('Debt to ' + this.creditor + ' settled for ' + this.settler.text);
+        } else {
+          alert('Debt to ' + this.creditor + ' could not be settled for ' + this.settler.text);
+        }
+      })
     }
   }
 }

@@ -1,6 +1,6 @@
 <template>
   <div id="adding-payment">
-    <sui-form>
+    <sui-form v-on:submit.prevent="validateForm">
       <sui-form-field>
         <sui-header dividing>The group of the payment</sui-header>
         <sui-segment style="width: fit-content">
@@ -57,7 +57,7 @@
             <sui-header dividing>Image</sui-header>
             <sui-input placeholder="Image" icon="image outline" type="file" v-model="description"/>
           </sui-form-field>
-          <sui-button animated style="margin-top: 20px">
+          <sui-button animated style="margin-top: 20px" @click="submitForm" type="submit">
             <sui-button-content visible>Submit form</sui-button-content>
             <sui-button-content hidden>
               <sui-icon name="right arrow"/>
@@ -128,6 +128,7 @@ export default {
       description: null,
       paymentImage: null,
       payer: null,
+      expenseID: null
     }
   },
   methods: {
@@ -152,6 +153,43 @@ export default {
             member.share = 100 * member.share / this.paidAmount
           }
         }
+      }
+    },
+    submitForm: function () {
+      let payer = null
+      if (!this.myself) {
+        payer = this.payer
+      }
+      this.$http.post(APIService.EXPENSE, {
+        'payer': payer,
+        'title': '',
+        'description': this.description,
+        'address': this.location,
+        'amount': this.paidAmount,
+        'image': this.image
+      }, {
+        emulateJSON: true,
+        headers: {'Authorization': 'Token ' + APIService.KEY}
+      })
+          .then(response => response.json())
+          .then((data) => {
+            this.expenseID = data.id;
+            for (let sharer of this.selectedGroup) {
+              this.$http.post(APIService.EXPENSE + this.expenseID + '/share/', {
+                'user': sharer.value,
+                'settler': null,
+                'share': sharer.share
+              }, {
+                emulateJSON: true,
+                headers: {'Authorization': 'Token ' + APIService.KEY}
+              }).then(response => response.status).then((data) => console.log(data))
+            }
+            alert('Expense added successfully!');
+          })
+    },
+    validateForm: function () {
+      if (!this.paidAmount) {
+        alert("Specify the paid amount.");
       }
     }
   },
@@ -212,7 +250,9 @@ export default {
           this.friends = [];
           for (let friend of data) {
             this.friends.push({
-              text: friend.username, key: friend.username, value: {text: friend.username, share: null}
+              text: friend.username,
+              key: friend.username,
+              value: {text: friend.username, key: friend.username, value: friend.username, share: null}
             })
           }
         })
