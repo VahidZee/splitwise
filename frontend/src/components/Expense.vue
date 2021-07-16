@@ -30,7 +30,7 @@
 
           </p>
             <!--<router-link :to='"/news/" + post.id'><h3 class="post-title" ><sui-icon name="play" v-if="post.media === 'video'"></sui-icon>{{post.title}}</h3></router-link>-->
-            <router-link :to='"/expense/" + expense.id'><sui-button circular size="mini" color="blue" basic>Pay</sui-button></router-link>
+            <router-link :to='"/expense/" + expense.id'><sui-button circular size="mini" color="blue" basic>Payment Page</sui-button></router-link>
         </div>
     </sui-grid-column>
 </template>
@@ -40,7 +40,7 @@
 
     export default {
         name: "Expense",
-        props: ["expense"],
+        props: ["expense","userr"],
         data(){
           return {
             curr_username:''
@@ -48,7 +48,11 @@
         },
         computed: {
             color: function () {
-                return this.expense.payer === this.curr_username  ? 'green' : 'orange';
+              console.log('here')
+              console.log(this.expense.payer)
+              console.log(this.userr)
+              console.log('then')
+              return this.expense.payer !== this.userr  ? 'green' : 'orange';
             }
         },
       methods:{

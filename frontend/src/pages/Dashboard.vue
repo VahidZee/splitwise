@@ -38,6 +38,7 @@ export default {
           .then(response => response.json())
           .then((data) => {
             this.expens = data
+            this.expens['user']=this.curr_username
           })
           .catch(error => console.log(error))
     },
@@ -55,7 +56,7 @@ export default {
           .catch(error => console.log(error))
 
     },
-    get_debts: function ( arg ) {
+    get_debts: function (arg) {
       console.log(arg)
 
       for (let friend of arg) {
@@ -69,15 +70,29 @@ export default {
             .catch(error => console.log(error))
       }
     },
-  },
+    get_me: function () {
+      console.log(APIService.KEY)
+      this.$http.get(APIService.UPDATEINFO,
+          {emulateJSON: true, headers: {'Authorization': 'Token ' + APIService.KEY}})
+          .then(response => response.json())
+          .then((data) => {
+            this.curr_username = data.username
+          })
+          .catch(error => console.log(error))
+    },
+  }
+  ,
   data() {
     return {
       expens: [],
       friends: [],
-      exp_friends: []
+      exp_friends: [],
+      curr_username:''
     }
-  },
+  }
+  ,
   mounted() {
+    this.get_me()
     this.get_payments()
     this.get_friends()
   }
@@ -92,10 +107,9 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   border-radius: 6px;
 }
+
 .post-title {
   color: red;
-  //width: 70%;
-  margin: 0 auto;
-  font-size: x-large;
+//width: 70%; margin: 0 auto; font-size: x-large;
 }
 </style>
