@@ -36,7 +36,7 @@ export default {
   mounted() {
     this.payID = this.$route.params.id
     console.log(this.payID)
-    this.$http.get(APIService.EXPENSE + this.payID+'/', {
+    this.$http.get(APIService.EXPENSE + this.payID + '/', {
       emulateJSON: true,
       headers: {'Authorization': 'Token ' + APIService.KEY}
     })
@@ -56,10 +56,10 @@ export default {
   methods: {
     submitForm: function () {
       console.log(this.settler)
-      this.$http.post(APIService.EXPENSE + 'pay/' + this.settler.id+'/', {}, {
+      this.$http.post(APIService.EXPENSE + 'pay/' + this.settler.id + '/', {}, {
         emulateJSON: true,
         headers: {'Authorization': 'Token ' + APIService.KEY}
-      }).then(response => response.status).then((data) => {
+      }).then(response => response.status, response => console.log('AAAAAAAAAAAAA' + response)).then((data) => {
         console.log(data);
         if (data === 202) {
           alert('Debt to ' + this.creditor + ' settled for ' + this.settler.text);
