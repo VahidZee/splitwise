@@ -87,6 +87,11 @@ class UsernameSerializer(serializers.Serializer):
     username = serializers.CharField(label=_("Username"), allow_blank=False, required=True)
 
 
+class InviteSerializer(serializers.Serializer):
+    email = serializers.EmailField(label=_("Email"), allow_blank=True, required=False)
+    phone = serializers.CharField(label=_("Phone"), allow_blank=True, required=False)
+
+
 class EgoUserSerializer(PrivateUserSerializer):
     class Meta:
         model = models.User

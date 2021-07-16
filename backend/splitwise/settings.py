@@ -163,3 +163,16 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication',
     ),
 }
+
+# Mail
+GMAIL = os.environ.get("GMAIL", default=False)
+if GMAIL:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST_USER = GMAIL
+    EMAIL_HOST_PASSWORD = os.environ.get("GMAIL_PASSWORD")
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_USE_TLS = True
+    EMAIL_PORT = 587
+else:
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST_USER = 'info@donger.ir'

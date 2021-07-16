@@ -21,7 +21,8 @@ class User(AbstractUser):
 
     @property
     def name(self):
-        return f'{self.first_name} {self.last_name}'
+        first = f'{self.first_name} '
+        return f'{first}{self.last_name}'
 
 
 class Friend(models.Model):

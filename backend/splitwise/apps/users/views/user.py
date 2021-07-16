@@ -6,6 +6,8 @@ from rest_framework import (status, viewsets, serializers as drf_serializers, pe
 from .. import serializers, models, permissions
 from rest_framework.authtoken.models import Token
 from rest_framework.authtoken.serializers import AuthTokenSerializer
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 class UserViewSet(
@@ -22,6 +24,7 @@ class UserViewSet(
     * **update** [`/user/me/|PUT`]: update ego user's information (excluding the password)
     * **retrieve** [`/user/me/|GET`]: obtain current user information
     * **change_password** [`/user/change_password|POST`]: update user password (old password is required)
+    * **invite** [`/user/invite|POST`]: invite external users
     """
 
     lookup_field = 'username'
@@ -36,7 +39,7 @@ class UserViewSet(
     def get_serializer_class(self):
         if self.action == 'create':
             return serializers.RegistrationSerializer
-        elif self.action in ['retrieve', 'update', 'me', 'list']:
+        if self.action in ['retrieve', 'update', 'me', 'list']:
             if self.request.user.is_staff or (
                     'username' in self.request.parser_context['kwargs'] and
                     self.request.user.username == self.request.parser_context['kwargs']['username']):
@@ -54,6 +57,8 @@ class UserViewSet(
                 return serializers.FriendSerializer
             else:
                 return drf_serializers.Serializer
+        elif self.action == 'invite':
+            return serializers.InviteSerializer
         return serializers.UserSerializer
 
     def get_permissions(self):
@@ -64,7 +69,7 @@ class UserViewSet(
             permission_list = [drf_permissions.AllowAny]
         elif self.action in ['update', 'change_password', 'logout', 'friends', 'me']:
             permission_list = [permissions.IsSelfOrAdmin, drf_permissions.IsAuthenticated]
-        elif self.action in ['retrieve', 'friend', 'list']:
+        elif self.action in ['retrieve', 'friend', 'list', 'invite']:
             permission_list = [drf_permissions.IsAuthenticated]
         else:
             permission_list = [drf_permissions.AllowAny]
@@ -148,6 +153,31 @@ class UserViewSet(
         """
         Change the password for every user with the possession of valid ForgetTokens
         """
+        return Response(status=status.HTTP_202_ACCEPTED)
+
+    @action(methods=['POST'], detail=False, )
+    def invite(self, request, format=None):
+        """
+        Invite external users
+
+        Permissions:
+
+        * _Authentication_ is required
+        """
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        if 'email' in serializer.validated_data and serializer.validated_data['email']:
+            send_mail(subject='Donger.ir Invitation!',
+                      message=f'''Howdy fellow Donger!
+                      Your friend {request.user.name if request.user.name else request.user.username} has invited you to
+                       join the donger.ir platform.''',
+                      html_message=f'''Howdy fellow Donger!<br> Your friend <strong>
+                        {request.user.name if request.user.name else request.user.username}
+                      </strong> has invited you to join the <a href="donger.ir">Donger</a> platform.''',
+                      from_email=settings.EMAIL_HOST_USER,
+                      recipient_list=[serializer.validated_data['email']],
+                      fail_silently=True)
+        # todo add phone api as well
         return Response(status=status.HTTP_202_ACCEPTED)
 
     @action(methods=['POST'], detail=False, )
