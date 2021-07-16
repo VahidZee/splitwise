@@ -56,7 +56,7 @@ export default {
   methods: {
     submitForm: function () {
       console.log(this.settler)
-      this.$http.post(APIService.EXPENSE + 'pay/' + this.settler.id, {}, {
+      this.$http.post(APIService.EXPENSE + 'pay/' + this.settler.id+'/', {}, {
         emulateJSON: true,
         headers: {'Authorization': 'Token ' + APIService.KEY}
       }).then(response => response.status).then((data) => {

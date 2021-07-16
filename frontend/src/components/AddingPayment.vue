@@ -166,7 +166,7 @@ export default {
         'description': this.description,
         'address': this.location,
         'amount': this.paidAmount,
-        'image': this.image
+        'image': null
       }, {
         emulateJSON: true,
         headers: {'Authorization': 'Token ' + APIService.KEY}
