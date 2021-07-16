@@ -1,17 +1,15 @@
 <template>
   <div id="app">
-    <slider-nav></slider-nav>
     <add-friend-component></add-friend-component>
   </div>
 </template>
 
 <script>
-import SliderNav from "../components/SliderNav";
 import AddFriendComponent from "@/components/AddFriendComponent";
 
 export default {
   name: "AddFriend",
-  components: {SliderNav, AddFriendComponent}
+  components: { AddFriendComponent}
 }
 </script>
 
