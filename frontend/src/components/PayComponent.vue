@@ -26,13 +26,9 @@ export default {
   name: "PayComponent",
   data() {
     return {
-      debtors: [
-        {text: 'Arvin', value: {text: 'Arvin', share: 100}, key: 'arvin'},
-        {text: 'Vahid', value: {text: 'Vahid', share: 1000}, key: 'vahid'},
-        {text: 'Soroush', value: {text: 'Soroush', share: 200}, key: 'surush'},
-      ],
+      debtors: null,
       settler: null,
-      creditor: 'Agha Arvin',
+      creditor: null,
       payID: null,
     }
   },

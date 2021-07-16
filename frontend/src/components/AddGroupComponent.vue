@@ -60,7 +60,7 @@ export default {
                   .then((data) => console.log(friend + data))
             }
           })
-
+      alert('Group created!');
     }
   },
   mounted() {
