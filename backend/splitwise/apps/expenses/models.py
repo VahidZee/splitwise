@@ -56,6 +56,7 @@ class Share(models.Model):
 
     share = MoneyField(_('share amount'), max_digits=19, decimal_places=4, default_currency='USD', blank=True,
                        null=True)
+    updated_at = models.DateTimeField(_('last update'), auto_now=True)
 
     def settled(self):
         return self.settler is not None

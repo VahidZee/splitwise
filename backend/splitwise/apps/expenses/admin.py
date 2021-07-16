@@ -14,8 +14,8 @@ class ShareInline(admin.TabularInline):
     verbose_name_plural = _('shares')
     model = models.Share
     fk_name = 'expense'
-    fields = ['user', 'share', 'settler', 'settled']
-    readonly_fields = ['settled']
+    fields = ['user', 'share', 'settler', 'settled', 'updated_at']
+    readonly_fields = ['settled', 'updated_at']
     autocomplete_fields = ['user', 'settler']
     extra = 0
 

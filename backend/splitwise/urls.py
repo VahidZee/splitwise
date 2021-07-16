@@ -19,6 +19,7 @@ from rest_framework import routers
 from django.conf import settings
 
 import splitwise.apps.users.views as user_views
+import splitwise.apps.expenses.views as expense_views
 
 router = routers.DefaultRouter()
 router.get_api_root_view().cls.__name__ = "DongerAPIRoot"
@@ -27,6 +28,8 @@ router.get_api_root_view().cls.__doc__ = "Fully browsable back-end API of the Do
 router.register('user', user_views.UserViewSet, basename='user')
 router.register('friend', user_views.FriendViewSet, basename='friend')
 router.register('clique', user_views.CliqueViewSet, basename='clique')
+router.register('expense', expense_views.ExpenseViewSet, basename='expense')
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('rest_framework.urls')),
