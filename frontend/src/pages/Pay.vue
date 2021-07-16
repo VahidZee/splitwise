@@ -1,15 +1,15 @@
 <template>
   <div id="app">
-    <adding-payment></adding-payment>
+    <pay-component></pay-component>
   </div>
 </template>
 
 <script>
-import AddingPayment from "../components/AddingPayment";
+import PayComponent from "../components/PayComponent";
 
 export default {
-  name: "AddPayment",
-  components: {AddingPayment},
+  name: "Pay",
+  components: {PayComponent}
 }
 </script>
 
@@ -20,7 +20,7 @@ export default {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  margin-bottom: 20px;
+  /*margin-bottom: 20px;*/
   /*height: 100vw;*/
   /*display: grid;*/
   /*justify-content: center;*/
