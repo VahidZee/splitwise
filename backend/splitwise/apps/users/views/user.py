@@ -15,6 +15,7 @@ class UserViewSet(
     mixins.UpdateModelMixin, mixins.ListModelMixin
 ):
     """
+    Asghar
     API for user information management and retrieval
 
     * **login** [`/user/login/|POST`]: obtain a valid authentication token by sending valid credentials url
@@ -198,7 +199,7 @@ class UserViewSet(
     @action(methods=['POST'], detail=False, )
     def resend_validation(self, request, format=None):
         """
-        Activate account of any user with the possession of a valid activation token
+        Request for acquirement of a ActivationToken
         """
         # todo email
         return Response(status=status.HTTP_202_ACCEPTED)
