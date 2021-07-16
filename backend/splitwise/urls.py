@@ -14,8 +14,29 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from rest_framework import routers
+from django.conf import settings
+
+import splitwise.apps.users.views as user_views
+import splitwise.apps.expenses.views as expense_views
+
+router = routers.DefaultRouter()
+router.get_api_root_view().cls.__name__ = "DongerAPIRoot"
+router.get_api_root_view().cls.__doc__ = "Fully browsable back-end API of the Donger platform"
+
+router.register('user', user_views.UserViewSet, basename='user')
+router.register('friend', user_views.FriendViewSet, basename='friend')
+router.register('clique', user_views.CliqueViewSet, basename='clique')
+router.register('expense', expense_views.ExpenseViewSet, basename='expense')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('auth/', include('rest_framework.urls')),
+    path('', include(router.urls)),
 ]
+
+if settings.DEBUG:
+    from django.conf.urls.static import static
+
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

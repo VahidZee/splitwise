@@ -2,6 +2,10 @@ django==3.2.5
 djangorestframework==3.12.4
 psycopg2-binary==2.9.1
 python-dotenv==0.18.0
-djangorestframework==3.12.4
 Markdown==3.3.4
 django-filter==2.4.0
+django-phonenumber-field==5.2.0
+phonenumbers==8.12.27
+django_cors_headers==3.7.0
+Pillow==8.3.1
+django-money==2.0.1
