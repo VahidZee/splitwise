@@ -3,10 +3,11 @@
     <!--    <full-header :post="mainNews" :match="liveMatch"></full-header>-->
     <!--    <payments v-on:change-count="onChangeCount" v-on:get-fav="getFavNews" :posts="posts" :favs="fav_posts" with-header="Latest News" with-buttons="true"></payments>-->
     <!--    <sui-grid class="container-fluid stackable padded">-->
-    <slider-nav></slider-nav>
     <h1></h1>
     <h1></h1>
-    <expenses :expens="this.expens" with-header="Dashboard"></expenses>
+    <expenses :expens="this.expens" with-header="My Expenses"></expenses>
+    <div class="post-title">Friend's debts:</div>
+    <expenses v-for="exps in this.parsedExp" :key="exps.user" :expens="exps" :with-header="exps.user"></expenses>
     <!--<sui-grid-row>-->
     <!--<sui-button @click="loadMoreNews" basic inverted color="red" circular class="m-auto" icon="ellipsis horizontal"></sui-button>-->
     <!--</sui-grid-row>-->
@@ -17,52 +18,68 @@
 
 <script>
 import Expenses from "@/components/Expenses";
-import SliderNav from "@/components/SliderNav";
+import {APIService} from "@/APIService";
 
 export default {
   name: "Dashboard",
-  components: {Expenses,SliderNav},
+  components: {Expenses},
+  computed: {
+    parsedExp: function () {
+      return this.exp_friends
+    },
+    parsedFri: function () {
+      return this.friends
+    },
+  },
+  methods: {
+    get_payments: function () {
+      this.$http.get(APIService.Expense,
+          {emulateJSON: true, headers: {'Authorization': 'Token ' + APIService.KEY}})
+          .then(response => response.json())
+          .then((data) => {
+            this.expens = data
+          })
+          .catch(error => console.log(error))
+    },
+    get_friends: function () {
+      console.log("here")
+      this.$http.get(APIService.FRIEND,
+          {emulateJSON: true, headers: {'Authorization': 'Token ' + APIService.KEY}})
+          .then(response => response.json())
+          .then((data) => {
+            this.friends = data
+            console.log(data)
+            console.log(this.friends)
+            this.get_debts(data)
+          })
+          .catch(error => console.log(error))
+
+    },
+    get_debts: function ( arg ) {
+      console.log(arg)
+
+      for (let friend of arg) {
+        this.$http.get(APIService.Debt + friend.username,
+            {emulateJSON: true, headers: {'Authorization': 'Token ' + APIService.KEY}})
+            .then(response => response.json())
+            .then((data) => {
+              data["user"] = friend.username;
+              this.exp_friends.push(data);
+            })
+            .catch(error => console.log(error))
+      }
+    },
+  },
   data() {
     return {
-      expens: [
-        {
-          id: 123,
-          creator: "Soroush",
-          cgroup: "Group1",
-          val: 123,
-          add_date: "12/02/1999",
-          type: 'debt',
-          members: ['Ahmad', 'Asghar', ' Akbar']
-        },
-        {
-          id: 74,
-          creator: "Soroush",
-          cgroup: "Group1",
-          val: 123,
-          add_date: "12/02/1999",
-          type: 'payment',
-          members: ['Ahmad', 'Asghar', ' Akbar']
-        },
-        {
-          id: 12,
-          creator: "Soroush",
-          cgroup: "Group1",
-          val: 123,
-          add_date: "12/02/1999",
-          type: 'payment',
-          members: ['Ahmad', 'Asghar', ' Akbar']
-        },
-        {
-          id: 14,
-          creator: "Soroush",
-          cgroup: "Group1",
-          val: 123,
-          add_date: "12/02/1999",
-          type: 'payment',
-          members: ['Ahmad', 'Asghar', ' Akbar']
-        }
-      ]
+      expens: [],
+      friends: [],
+      exp_friends: []
     }
+  },
+  mounted() {
+    this.get_payments()
+    this.get_friends()
   }
 }
 </script>
@@ -75,5 +92,10 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   border-radius: 6px;
 }
-
+.post-title {
+  color: red;
+  //width: 70%;
+  margin: 0 auto;
+  font-size: x-large;
+}
 </style>

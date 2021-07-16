@@ -10,18 +10,22 @@
                         empty
                 ></sui-label>
                 {{expense.creator.toUpperCase()}}
-                <sui-icon name="calendar" class="inverted"></sui-icon>{{expense.add_date}}
+                <sui-icon name="money" class="inverted"></sui-icon>{{expense.payer}}
+                <sui-icon name="calendar" class="inverted"></sui-icon>{{expense.date_created}}
             </div>
           <p>
 
           </p>
-          <router-link :to='"/expense/" + expense.id'><span>Group: </span><span class="post-title">{{expense.cgroup}}</span></router-link>
+<!--          <sui-item-image :src="expense.image"/>-->
+          <router-link :to='"/expense/" + expense.id'><span>Title: </span><span class="post-title">{{expense.title}}</span></router-link>
+          <router-link :to='"/expense/" + expense.id'><span>Description: </span><span class="post-title">{{expense.description}}</span></router-link>
+          <router-link :to='"/expense/" + expense.id'><span>Address: </span><span class="post-title">{{expense.address}}</span></router-link>
           <router-link :to='"/expense/" + expense.id'><span>Members: </span>
-              <span v-for="member in expense.members"
-                                                            :key="member"
-                                                            class="post-title">{{member}}</span></router-link>
+              <span v-for="share in expense.shares"
+                                                            :key="share.id"
+                                                            class="post-title">{{share.user}}</span></router-link>
             <router-link :to='"/expense/" + expense.id'><span>Amount: </span>
-              <span class="post-title">{{expense.val}}$</span></router-link>
+              <span class="post-title">{{expense.amount}}$</span></router-link>
           <p>
 
           </p>
@@ -32,27 +36,36 @@
 </template>
 
 <script>
+    import {APIService} from "@/APIService";
+
     export default {
         name: "Expense",
         props: ["expense"],
-        // data(){
-        //   return {
-        //     expense: {
-        //       id: 123,
-        //       creator: "Soroush",
-        //       cgroup: "Group1",
-        //       val: 123,
-        //       add_date: "12/02/1999",
-        //       type: 'debt',
-        //       members: ['Ahmad', 'Asghar', ' Akbar']
-        //     }
-        //   }
-        // },
+        data(){
+          return {
+            curr_username:''
+          }
+        },
         computed: {
             color: function () {
-                return this.expense.type ===  'debt' ? 'green' : 'orange';
+                return this.expense.payer === this.curr_username  ? 'green' : 'orange';
             }
-        }
+        },
+      methods:{
+        get_info: function () {
+          console.log(APIService.KEY)
+          this.$http.get(APIService.UPDATEINFO,
+              {emulateJSON: true, headers: {'Authorization': 'Token ' + APIService.KEY}})
+              .then(response => response.json())
+              .then((data) => {
+                this.curr_username = data.username
+              })
+              .catch(error => console.log(error))
+        },
+      },
+      mounted() {
+          this.get_info();
+      }
     }
 </script>
 
