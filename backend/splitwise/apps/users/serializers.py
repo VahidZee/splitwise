@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from django.utils.translation import gettext_lazy as _
-from . import models, utils
+from . import models
+from .. import utils
 
 
 class RegistrationSerializer(serializers.ModelSerializer):

@@ -10,7 +10,7 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 
 class UserViewSet(
     viewsets.GenericViewSet, mixins.CreateModelMixin, mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
+    mixins.UpdateModelMixin, mixins.ListModelMixin
 ):
     """
     API for user information management and retrieval
@@ -18,6 +18,7 @@ class UserViewSet(
     * **login** [`/user/login/|POST`]: obtain a valid authentication token by sending valid credentials url
     * **logout** [`/user/logout/|POST`]: invalidate currently owned authentication token
     * **retrieve** [`/user/<username>/|GET`]: obtain user information (by looking up username)
+    * **list** [`/user/|GET`]: get the list of all users
     * **update** [`/user/me/|PUT`]: update ego user's information (excluding the password)
     * **retrieve** [`/user/me/|GET`]: obtain current user information
     * **change_password** [`/user/change_password|POST`]: update user password (old password is required)
@@ -35,9 +36,10 @@ class UserViewSet(
     def get_serializer_class(self):
         if self.action == 'create':
             return serializers.RegistrationSerializer
-        elif self.action in ['retrieve', 'update', 'me']:
-            if self.request.user.is_staff or \
-                    self.request.user.username == self.request.parser_context['kwargs']['username']:
+        elif self.action in ['retrieve', 'update', 'me', 'list']:
+            if self.request.user.is_staff or (
+                    'username' in self.request.parser_context['kwargs'] and
+                    self.request.user.username == self.request.parser_context['kwargs']['username']):
                 return serializers.EgoUserSerializer
             else:
                 return serializers.UserSerializer
@@ -62,7 +64,7 @@ class UserViewSet(
             permission_list = [drf_permissions.AllowAny]
         elif self.action in ['update', 'change_password', 'logout', 'friends', 'me']:
             permission_list = [permissions.IsSelfOrAdmin, drf_permissions.IsAuthenticated]
-        elif self.action in ['retrieve', 'friend']:
+        elif self.action in ['retrieve', 'friend', 'list']:
             permission_list = [drf_permissions.IsAuthenticated]
         else:
             permission_list = [drf_permissions.AllowAny]
@@ -139,4 +141,34 @@ class UserViewSet(
          * _Authentication_ is required
         """
         shortcuts.get_object_or_404(Token, user=request.user).delete()
+        return Response(status=status.HTTP_202_ACCEPTED)
+
+    @action(methods=['POST'], detail=False, )
+    def reset_password(self, request, format=None):
+        """
+        Change the password for every user with the possession of valid ForgetTokens
+        """
+        return Response(status=status.HTTP_202_ACCEPTED)
+
+    @action(methods=['POST'], detail=False, )
+    def forget_password(self, request, format=None):
+        """
+        Request for acquirement of a ForgetToken
+        """
+        # todo email
+        return Response(status=status.HTTP_202_ACCEPTED)
+
+    @action(methods=['POST'], detail=False, )
+    def validate_account(self, request, format=None):
+        """
+        Activate account of any user with the possession of a valid activation token
+        """
+        return Response(status=status.HTTP_202_ACCEPTED)
+
+    @action(methods=['POST'], detail=False, )
+    def resend_validation(self, request, format=None):
+        """
+        Activate account of any user with the possession of a valid activation token
+        """
+        # todo email
         return Response(status=status.HTTP_202_ACCEPTED)
