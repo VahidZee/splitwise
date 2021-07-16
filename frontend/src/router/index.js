@@ -47,7 +47,7 @@ export default new VueRouter({
             name: 'User Info',
             component: UserInfo
         }, {
-            path: '/pay',
+            path: '/expense/:id',
             name: 'Pay expense',
             component: Pay
         },

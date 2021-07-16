@@ -1,6 +1,6 @@
 <template>
   <div id="pay">
-    <sui-form>
+    <sui-form v-on:submit.prevent="settler">
       <sui-header dividing>Pay this expense to {{ creditor }}</sui-header>
       <sui-form-field>
         <label> Choose who to pay for </label>
@@ -13,6 +13,7 @@
       </sui-form-field>
       <sui-form-field v-if="settler">
         <sui-header>Amount of debt is {{ settler.share }}$</sui-header>
+        <sui-header>ID is {{ settler.id }}$</sui-header>
         <sui-button @click="submitForm"> Settle Debt</sui-button>
       </sui-form-field>
     </sui-form>
@@ -26,19 +27,16 @@ export default {
   name: "PayComponent",
   data() {
     return {
-      debtors: [
-        {text: 'Arvin', value: {text: 'Arvin', share: 100}, key: 'arvin'},
-        {text: 'Vahid', value: {text: 'Vahid', share: 1000}, key: 'vahid'},
-        {text: 'Soroush', value: {text: 'Soroush', share: 200}, key: 'surush'},
-      ],
+      debtors: null,
       settler: null,
-      creditor: 'Agha Arvin',
+      creditor: null,
       payID: null,
     }
   },
   mounted() {
     this.payID = this.$route.params.id
-    this.$http.get(APIService.EXPENSE + this.payID, {
+    console.log(this.payID)
+    this.$http.get(APIService.EXPENSE + this.payID+'/', {
       emulateJSON: true,
       headers: {'Authorization': 'Token ' + APIService.KEY}
     })
@@ -53,10 +51,11 @@ export default {
               value: {text: debtor.user, share: debtor.share, id: debtor.id}
             })
           }
-        })
+        }).catch(error => console.log(error))
   },
   methods: {
     submitForm: function () {
+      console.log(this.settler)
       this.$http.post(APIService.EXPENSE + 'pay/' + this.settler.id, {}, {
         emulateJSON: true,
         headers: {'Authorization': 'Token ' + APIService.KEY}
@@ -67,7 +66,7 @@ export default {
         } else {
           alert('Debt to ' + this.creditor + ' could not be settled for ' + this.settler.text);
         }
-      })
+      }).catch(error => console.log(error))
     }
   }
 }
