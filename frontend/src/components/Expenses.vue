@@ -30,6 +30,7 @@
           v-for="exp in filteredExps()"
           :key="exp.id"
           :expense="exp"
+          :userr="expens.user"
           class="cell"
       ></expense>
 <!--      <expense :key="12"></expense>-->
@@ -92,7 +93,16 @@ export default {
   },
   methods: {
     filterByType(exp) {
-      return this.filter === 'All' || exp.type === this.filter.toLowerCase();
+      if(this.filter === 'All'){
+        return true;
+      }
+      if(this.filter === 'Payment' && exp.payer===this.expens.user){
+        return true;
+      }
+      if(this.filter === 'Debt' && exp.payer!==this.expens.user){
+        return true;
+      }
+      return false;
     },
     filteredExps: function () {
       // if (this.filter === 'All')
